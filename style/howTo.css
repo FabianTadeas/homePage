@@ -1,0 +1,30 @@
+.box {
+    transition: var(--transitionSpeed);
+    box-sizing: border-box;
+    background-color: var(--divBgcolor);
+    border: 1px solid var(--borderColor);
+    height: fit-content;
+    width: 60%;
+    border-radius: 4px;
+    overflow-x: auto;
+    overflow-y: auto;
+    color: var(--textColor);
+    margin-inline: auto;
+    clear: both;
+    margin-block: 10px;
+}
+
+.box:hover {
+    border-color: var(--accentColorSelected);
+}
+
+body>hr {
+    width: 90%;
+    border: none;
+    border-bottom: 1px solid var(--borderColor);
+}
+
+h1 {
+    margin-left: 5%;
+    color: var(--textColorFaded);
+}

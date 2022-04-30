@@ -1,0 +1,49 @@
+:root {
+    --mainBgColor:        #2A2E32;
+    --accentColorHover:   #2E4857;
+    --accentColorSelected:#3DAEE9;
+    --borderColor:        #3F4246;
+    --divBgcolor:         #1B1E20;
+    --textColor:          #FCFCFC;
+    --textColorFaded:     #A8A9AB;
+    --headerBgColor:      #31363B;
+    --listEven:           #232629;
+    --listOdd:            #1B1E20;
+    --transitionSpeed: 0.3s;
+}
+:root body.lightMode {
+    --mainBgColor:        #EFF0F1;
+    --accentColorHover:   #CBE3F0;
+    --accentColorSelected:#3DAEE9;
+    --borderColor:        #BCBEBF;
+    --divBgcolor:         #FFFFFF;
+    --textColor:          #232629;
+    --textColorFaded:     #747679;
+    --headerBgColor:      #FCFCFC;
+    --listEven:           #F7F7F7;
+    --listOdd:            #FFFFFF;
+}
+:root body.editMode {
+    --accentColorHover:   #572e2e;
+    --accentColorSelected:#e93d3d;
+}
+:root body.editMode.lightMode {
+    --accentColorHover:   #f0cbcb;
+    --accentColorSelected:#e93d3d;
+}
+* {
+    
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    box-sizing: border-box;
+    /* border: 1px solid red; */
+}
+body {
+    background-color: var(--mainBgColor);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+}
+.hidden {
+    display: none;
+}

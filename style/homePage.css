@@ -1,0 +1,272 @@
+body {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+div {
+    float: left;
+}
+
+/*  */
+
+/*left container and its content*/
+
+/*  */
+#leftContainer {
+    transition: var(--transitionSpeed);
+    background-color: var(--mainBgColor);
+    width: 250px;
+    height: 100%;
+    border-right: 1px solid var(--borderColor);
+    margin-right: 20px;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+ul#navBar {
+    transition: var(--transitionSpeed);
+    list-style-type: none;
+    margin-top: 8px;
+    padding: 0 5px 0 5px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    display: block;
+}
+
+li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+li a {
+    transition: var(--transitionSpeed);
+    display: inline-block;
+    color: var(--textColor);
+    margin: 0;
+    padding: 5px;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+    flex: 80%;
+}
+
+li>i {
+    transition: var(--transitionSpeed);
+    color: var(--textColor);
+    margin: 0;
+    display: table-cell;
+    padding-top: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+    flex: 20%;
+}
+
+li>i:hover {
+    background-color: var(--accentColorHover);
+}
+
+li a:hover {
+    background-color: var(--accentColorHover);
+}
+
+ul#navBar p {
+    /*navbar titles*/
+    color: var(--textColorFaded);
+    font-size: 15px;
+    margin: 15px 0 6px 0;
+    cursor: default;
+}
+
+ul#navBar i {
+    /*navbar favicon*/
+    padding-right: 4px;
+}
+
+li a.selected {
+    background-color: var(--accentColorSelected);
+}
+
+a.add {
+    display: table;
+    width: 100%;
+}
+
+a.add i {
+    display: table-cell;
+    text-align: center;
+}
+
+
+
+/*  */
+
+/*right container and its content*/
+
+/*  */
+#rightContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 5px 5px 5px 0;
+}
+
+#contentBox {
+    transition: var(--transitionSpeed);
+    box-sizing: border-box;
+    background-color: var(--divBgcolor);
+    border: 1px solid var(--borderColor);
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: var(--textColor);
+}
+
+#contentBox:hover {
+    border-color: var(--accentColorSelected);
+}
+
+button.selected {
+    background-color: var(--accentColorSelected);
+}
+
+/*folders*/
+
+div#contentBox table {
+
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+div#contentBox table:not(.tableHeader) tr:nth-child(even) {
+    background-color: var(--listEven);
+}
+
+div#contentBox table:not(.tableHeader) tr:nth-child(odd) {
+    background-color: var(--listOdd);
+}
+
+div#contentBox table:not(.tableHeader) {
+    cursor: pointer;
+}
+
+div#contentBox table.tableHeader {
+    background-color: var(--headerBgColor);
+}
+
+div#contentBox table.tableHeader th {
+    border-bottom: 1px solid var(--borderColor);
+}
+
+div#contentBox table tr {
+    transition: var(--transitionSpeed);
+}
+
+div#contentBox table.tableHeader th:hover {
+    background-color: var(--accentColorHover);
+}
+
+div#contentBox table:not(.tableHeader) tr:hover {
+    background-color: var(--accentColorHover);
+}
+
+div#contentBox table:not(.tableHeader) tr {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+
+}
+
+div#contentBox table:not(.tableHeader) td {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/*  */
+
+/* forms */
+
+/*  */
+
+#formBox {
+    transition: var(--transitionSpeed);
+    background-color: var(--divBgcolor);
+    box-sizing: border-box;
+    border: 1px solid var(--borderColor);
+    width: 100%;
+    border-radius: 4px;
+    color: var(--textColor);
+    margin-bottom: 10px;
+    padding-inline: 5px;
+    padding-block: 10px;
+}
+
+#form {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+#formBox:hover {
+    border-color: var(--accentColorSelected);
+}
+
+#formBox div {
+    width: 100%;
+}
+
+#formBox input[type=text] {
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+@media screen and (max-width: 700px) {
+    div#contentBox table td:not(:first-child) {
+        display: none;
+    }
+
+    div#contentBox table th:not(:first-child) {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    #leftContainer {
+        width: 50px;
+        position: absolute;
+    }
+
+    #leftContainer:hover {
+        width: 200px;
+    }
+
+    #rightContainer {
+        margin-left: 70px;
+    }
+
+    ul#navBar {
+        opacity: 0;
+    }
+
+    #leftContainer:hover ul#navBar {
+        opacity: 1;
+    }
+}
