@@ -15,10 +15,14 @@ function NBListener() {
     navBarLinksList.forEach(item => {
         item.addEventListener('click', event => {
             //adds and removes the selected class from navbar links
+            console.log('link clicked!')
             contentBox.innerHTML = '';
             if (item.id !== activeLinkId) {
                 if (activeLinkId) {
-                    document.getElementById(activeLinkId).classList.remove('selected');
+                    let activeLink = document.getElementById(activeLinkId)
+                    if (activeLink) {
+                        activeLink.classList.remove('selected');
+                    }
                 }
                 activeLinkId = item.id;
                 document.getElementById(activeLinkId).classList.add('selected');
@@ -322,8 +326,7 @@ const linkEditHandler = function (event, newLink) {
                 },
                 {
                     type: 'button',
-                    askFor: 'delete',
-                    id: oldLink.ID
+                    askFor: 'delete'
                 }
             ]
             buildForm(questions, linkEditHandler);
@@ -433,7 +436,6 @@ function buildForm(questions, callback) {
             input.value = object.askFor;
             input.name = object.askFor;
             input.id = object.askFor + 'Button';
-            input.dataset.editing = object.id;
 
             div.append(input);
             form.append(div);
