@@ -1,4 +1,4 @@
-import { addToDataBase, readAllFromDataBaseByIndex, readFromDataBase, removeFromDataBase, editDataBase } from './dataBase.js';
+import { addToDataBase, readAllFromDataBaseByIndex, readFromDataBase, removeFromDataBase, editDataBase, removeAllFromDateBase } from './dataBase.js';
 import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
 
 
@@ -343,7 +343,9 @@ const linkEditHandler = function (event, newLink) {
             }
             if (newLink == 'delete') {
                 removeFromDataBase(oldLink.ID, 'linksOS')
+                readAllFromDataBaseByIndex('belongsToIndex', oldLink.ID, 'bookmarksOS', removeAllFromDateBase);
                 readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
+                contentBox.innerHTML = '';
             }
         }
     }

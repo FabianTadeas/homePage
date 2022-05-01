@@ -101,6 +101,13 @@ export function removeFromDataBase(key, OSName) {
 }
 
 
+export function removeAllFromDateBase(objects) {
+    objects.forEach(object => {
+        removeFromDataBase(object.ID, 'bookmarksOS');
+    })
+}
+
+
 export function readFromDataBase(key, OSName, callback) {
     console.log(key, OSName);
     let tx = db.transaction(OSName, 'readonly');
