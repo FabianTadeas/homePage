@@ -10,7 +10,7 @@ if (!window.indexedDB) {
 
 
 let db,
-    requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 1);
+    requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 2);
 
 
 
