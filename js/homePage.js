@@ -1,12 +1,12 @@
 import { addToDataBase, readAllFromDataBaseByIndex, readFromDataBase, removeFromDataBase, editDataBase, removeAllFromDateBase } from './dataBase.js';
 import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
+import { settingsOpen, editMode } from "./settings.js";
 
 
 let contentBox = document.getElementById("contentBox"),
     navBarLinksList,
     activeLinkId,
     navBar = document.getElementById('navBar'),
-    editMode = false,
     highestNavBarOrder,
     formBox = document.getElementById('formBox');
 
@@ -153,33 +153,6 @@ export function buildTable(content) {
     if (editMode) {
         editModeUpdate()
     }
-}
-
-
-function settingsOpen() {
-
-
-    document.getElementById('darkLightToggle').addEventListener('click', event => {
-        console.log('theme switched');
-        document.body.classList.toggle('lightMode');
-    })
-
-
-
-    let editModeToggle = document.getElementById('editModeToggle');
-    editModeToggle.addEventListener('click', event => {
-        if (editMode == false) {
-            editMode = true;
-            editModeToggle.classList.add('selected');
-        } else {
-            editMode = false;
-            editModeToggle.classList.remove('selected');
-        }
-        document.body.classList.toggle('editMode');
-        readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
-    })
-
-
 }
 
 

@@ -130,4 +130,9 @@ export const defaultLinks = [
     },
   ];
   
-  export const defaultUserSettings = {}
+  export const defaultUserSettings = [
+    {
+      name: 'theme',
+      lightTheme: true
+    }
+  ]

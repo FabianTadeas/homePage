@@ -1,5 +1,6 @@
 import { buildNavBar, buildTable } from "./homePage.js";
 import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
+import { switchTheme } from "./settings.js";
 
 
 
@@ -51,6 +52,19 @@ requestIDBOpen.onsuccess = event => {
         }
     }
 
+
+    let txs = db.transaction('settingsOS', 'readwrite');
+    let stores = txs.objectStore('settingsOS');
+    let requests = stores.getAll();
+    requests.onsuccess = event => {
+        if (event.target.result.length == 0) {
+            defaultUserSettings.forEach((obj) => {
+                let req = stores.add(obj);
+            })
+        }
+    }
+
+    readFromDataBase('theme', 'settingsOS', switchTheme);
     readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
 }
 
@@ -65,6 +79,9 @@ requestIDBOpen.onupgradeneeded = event => {
     if (!db.objectStoreNames.contains('bookmarksOS')) {
         let bookmarksObjectStore = db.createObjectStore('bookmarksOS', { keyPath: 'ID', autoIncrement: 'true' })
         bookmarksObjectStore.createIndex('belongsToIndex', 'belongsTo', { unique: false });
+    }
+    if (!db.objectStoreNames.contains('settingsOS')) {
+        let settingsObjectStore = db.createObjectStore('settingsOS', { keyPath: 'name' })
     }
 }
 
