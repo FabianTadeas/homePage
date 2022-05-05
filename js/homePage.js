@@ -68,13 +68,14 @@ export function buildNavBar(data) {
                 ei.dataset.editing = object.ID;
                 li.append(ei);
             }
-
+            li.dataset.order = object.order;
             navBar.appendChild(li);
         }
         if (object.type == 'title') {
 
             p.innerText = object.name;
             p.dataset.editing = object.ID;
+            p.dataset.order = object.order;
             navBar.appendChild(p);
         }
 
@@ -418,17 +419,9 @@ function buildForm(questions, callback) {
 
     })
 
-    const type = ['submit', 'reset'];
-    const value = ['submit', 'cancel'];
-    for (let i = 0; i < type.length; i++) {
-        const input = document.createElement('input');
-        const br = document.createElement('br');
-        input.type = type[i];
-        input.value = value[i];
-        input.name = value[i];
-        div.append(input, br);
-    }
-
+    const subDel = `<input type="submit" value="create" name="submit"> <br>
+                    <input type="reset" value="cancel" name="cancel">`;
+    div.innerHTML = subDel;
     form.append(div);
 
     form.setAttribute('autocomplete', 'off');
@@ -452,13 +445,14 @@ function buildForm(questions, callback) {
         }
 
     });
+
     formId.addEventListener('reset', event => {
         console.warn('canceled');
         formBox.classList.add('hidden');
         formBox.innerHTML = '';
     });
+
     let deleteButton = document.getElementById('deleteButton')
-    console.log(deleteButton);
     if (deleteButton) {
         deleteButton.addEventListener('click', event => {
             console.warn('deleted');

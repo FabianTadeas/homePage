@@ -5,12 +5,14 @@ import { editDataBase, readAllFromDataBaseByIndex, readFromDataBase } from "./da
 export let editMode = false;
 
 
-export function switchTheme(mode) {
+export async function loadTheme() {
 
-    if (mode.lightTheme) {
+    let theme = await readFromDataBase('theme', 'settingsOS');
+    console.log(theme.lightTheme);
+
+    if (theme.lightTheme) {
         document.body.classList.add('lightMode');
-    }
-    if (!mode.lightTheme) {
+    } else {
         document.body.classList.remove('lightMode');
     }
 
@@ -19,24 +21,12 @@ export function switchTheme(mode) {
 
 export function settingsOpen() {
 
-
-    document.getElementById('darkLightToggle').addEventListener('click', event => {
+    document.getElementById('darkLightToggle').addEventListener('click', async (event) => {
         console.log('theme switched');
-        if (document.body.classList.contains('lightMode')) {
-            let obj = {
-                name: 'theme',
-                lightTheme: false
-            }
-            editDataBase(obj, 'settingsOS')
-        }
-        if (!document.body.classList.contains('lightMode')) {
-            let obj = {
-                name: 'theme',
-                lightTheme: true
-            }
-            editDataBase(obj, 'settingsOS')
-        }
-        readFromDataBase('theme', 'settingsOS', switchTheme);
+        let theme = await readFromDataBase('theme', 'settingsOS');
+        theme.lightTheme = !theme.lightTheme;
+        editDataBase(theme, 'settingsOS');
+        loadTheme();
     })
 
 

@@ -1,6 +1,6 @@
 import { buildNavBar, buildTable } from "./homePage.js";
 import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
-import { switchTheme } from "./settings.js";
+import { loadTheme } from "./settings.js";
 
 
 
@@ -64,7 +64,7 @@ requestIDBOpen.onsuccess = event => {
         }
     }
 
-    readFromDataBase('theme', 'settingsOS', switchTheme);
+    loadTheme();
     readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
 }
 
@@ -126,44 +126,67 @@ export function removeAllFromDateBase(objects) {
 
 
 export function readFromDataBase(key, OSName, callback) {
-    console.log(key, OSName);
-    let tx = db.transaction(OSName, 'readonly');
-    let store = tx.objectStore(OSName);
-    let request = store.get(key);
 
-    request.onsuccess = event => {
-        let object = event.target.result;
-        callback(object);
-    }
-    request.onerror = event => {
-        let object = event.target.result;
-        console.warn(object, event);
-    }
+    return new Promise(resolve => {
+
+        console.log(key, OSName);
+        let tx = db.transaction(OSName, 'readonly');
+        let store = tx.objectStore(OSName);
+        let request = store.get(key);
+
+        request.onsuccess = event => {
+            let object = event.target.result;
+
+            if (!callback) {
+                resolve(object);
+            }
+
+            if (callback) {
+                callback(object);
+            }
+        }
+        request.onerror = event => {
+            let object = event.target.result;
+            console.warn(object, event);
+        }
+    });
 }
 
 
 export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
-    let tx = db.transaction(OSName, 'readonly');
-    let store = tx.objectStore(OSName);
-    let request;
-    if (indexName) {
-        let index = store.index(indexName);
-        request = index.getAll(range);
-    } else {
-        request = store.getAll();
-    }
-    request.onsuccess = event => {
-        let object = event.target.result;
-        callback(object);
-    }
-    request.onerror = event => {
-        let object = event.target.result;
-        console.warn(object, event);
-    }
+
+    return new Promise(resolve => {
+
+        let tx = db.transaction(OSName, 'readonly');
+        let store = tx.objectStore(OSName);
+        let request;
+        if (indexName) {
+            let index = store.index(indexName);
+            request = index.getAll(range);
+        } else {
+            request = store.getAll();
+        }
+        request.onsuccess = event => {
+            let object = event.target.result;
+
+            if (!callback) {
+                resolve(object);
+            }
+
+            if (callback) {
+                callback(object);
+            }
+        }
+        request.onerror = event => {
+            let object = event.target.result;
+            console.warn(object, event);
+        }
+    });
 }
 
 
 export function editDataBase(object, OSName) {
+    console.log('editing object:', object, 'in:', OSName );
     console.log(object, OSName)
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
