@@ -26,7 +26,7 @@ requestIDBOpen.onerror = event => {
 
 requestIDBOpen.onsuccess = event => {
     db = event.target.result;
-    console.log('DBsucces');
+    console.log('DB init succes');
 
 
     let txl = db.transaction('linksOS', 'readwrite');
@@ -65,7 +65,7 @@ requestIDBOpen.onsuccess = event => {
     }
 
     loadTheme();
-    readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
+    buildNavBar();
 }
 
 
@@ -87,7 +87,9 @@ requestIDBOpen.onupgradeneeded = event => {
 
 
 export function addToDataBase(object, OSName) {
-    console.log(object, OSName);
+    
+    console.log('adding:', object, 'to:', OSName);
+
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
     let request = store.add(object);
@@ -103,7 +105,9 @@ export function addToDataBase(object, OSName) {
 
 
 export function removeFromDataBase(key, OSName) {
-    console.log(key, OSName);
+    
+    console.log('removing:', key, 'from:', OSName);
+
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
     let request = store.delete(key);
@@ -119,6 +123,7 @@ export function removeFromDataBase(key, OSName) {
 
 
 export function removeAllFromDateBase(objects) {
+    console.log('removing these objects:', objects);
     objects.forEach(object => {
         removeFromDataBase(object.ID, 'bookmarksOS');
     })
@@ -129,7 +134,8 @@ export function readFromDataBase(key, OSName, callback) {
 
     return new Promise(resolve => {
 
-        console.log(key, OSName);
+        console.log('reading:', key,'from:', OSName);
+
         let tx = db.transaction(OSName, 'readonly');
         let store = tx.objectStore(OSName);
         let request = store.get(key);
@@ -142,6 +148,7 @@ export function readFromDataBase(key, OSName, callback) {
             }
 
             if (callback) {
+                console.warn('used a callback');
                 callback(object);
             }
         }
@@ -157,9 +164,12 @@ export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
 
     return new Promise(resolve => {
 
+        console.log('reading:', indexName, range, 'from:', OSName);
+
         let tx = db.transaction(OSName, 'readonly');
         let store = tx.objectStore(OSName);
         let request;
+
         if (indexName) {
             let index = store.index(indexName);
             request = index.getAll(range);
@@ -174,6 +184,7 @@ export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
             }
 
             if (callback) {
+                console.warn('used a callback');
                 callback(object);
             }
         }
@@ -187,7 +198,6 @@ export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
 
 export function editDataBase(object, OSName) {
     console.log('editing object:', object, 'in:', OSName );
-    console.log(object, OSName)
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
     let request = store.put(object);

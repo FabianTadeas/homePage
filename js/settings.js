@@ -8,7 +8,6 @@ export let editMode = false;
 export async function loadTheme() {
 
     let theme = await readFromDataBase('theme', 'settingsOS');
-    console.log(theme.lightTheme);
 
     if (theme.lightTheme) {
         document.body.classList.add('lightMode');
@@ -33,13 +32,7 @@ export function settingsOpen() {
 
     let editModeToggle = document.getElementById('editModeToggle');
     editModeToggle.addEventListener('click', event => {
-        if (editMode == false) {
-            editMode = true;
-            editModeToggle.classList.add('selected');
-        } else {
-            editMode = false;
-            editModeToggle.classList.remove('selected');
-        }
+        editMode = !editMode;
         document.body.classList.toggle('editMode');
         readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
     })

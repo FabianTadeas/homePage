@@ -45,9 +45,19 @@ function NBListener() {
 }
 
 
-export function buildNavBar(data) {
+export async function buildNavBar(data) {
+    
+    let content;
+    if (data) {
+        content = data;
+    }
+    if (!data) {
+        content = await readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS');
+    }
+    
     navBar.innerHTML = '';
-    data.forEach((object) => {
+    
+    content.forEach((object) => {
         const a = document.createElement('a');
         const i = document.createElement('i');
         const li = document.createElement('li');
@@ -102,9 +112,19 @@ export function buildNavBar(data) {
 }
 
 
-export function buildTable(content) {
-    const table = document.createElement('table');
+export async function buildTable(data) {
+    
+    let content;
+    if (data) {
+        content = data;
+    }
+    if (!data) {
+        content = await readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
+    }
+    
     contentBox.innerHTML = ''
+    const table = document.createElement('table');
+    
     content.forEach((object) => {
         const tr = table.insertRow();
         const i = document.createElement('i');
@@ -225,104 +245,89 @@ const addBookmarkHandler = function (event, newBookmark) {
 }
 
 
-let oldBookmark;
-const bookmarkEditHandler = function (event, newBookmark) {
-    let which = event.target;
-    if (which) {
-        let key = parseInt(event.target.parentElement.id, 10);
-        readFromDataBase(key, 'bookmarksOS', bookmarkEditHandler);
-    }
-    if (!which) {
-        if (!newBookmark) {
-            oldBookmark = event;
-            let questions = [
-                {
-                    type: 'text',
-                    askFor: 'name',
-                    default: oldBookmark.name
-                },
-                {
-                    type: 'text',
-                    askFor: 'URL',
-                    default: oldBookmark.link
-                },
-                {
-                    type: 'text',
-                    askFor: 'icon',
-                    default: oldBookmark.icon
-                },
-                {
-                    type: 'button',
-                    askFor: 'delete',
-                }
-            ]
-            buildForm(questions, bookmarkEditHandler);
+const bookmarkEditHandler = async function (event) {
+
+    let key = parseInt(event.target.parentElement.id, 10);
+    let oldBookmark = await readFromDataBase(key, 'bookmarksOS');
+
+    let questions = [
+        {
+            type: 'text',
+            askFor: 'name',
+            default: oldBookmark.name
+        },
+        {
+            type: 'text',
+            askFor: 'URL',
+            default: oldBookmark.link
+        },
+        {
+            type: 'text',
+            askFor: 'icon',
+            default: oldBookmark.icon
+        },
+        {
+            type: 'button',
+            askFor: 'delete',
         }
-        if (newBookmark) {
-            if (newBookmark !== 'delete') {
-                let newNewBookmark = oldBookmark;
-                newNewBookmark.name = newBookmark.elements['name'].value;
-                newNewBookmark.icon = newBookmark.elements['icon'].value;
-                newNewBookmark.link = newBookmark.elements['URL'].value;
-                editDataBase(newNewBookmark, 'bookmarksOS');
-                readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
-            }
-            if (newBookmark == 'delete') {
-                removeFromDataBase(oldBookmark.ID, 'bookmarksOS')
-                readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
-            }
-        }
+    ]
+
+    let answers = await buildForm(questions);
+
+    if (answers == 'delete') {
+        removeFromDataBase(oldBookmark.ID, 'bookmarksOS')
+        readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
+        return;
     }
+    let newBookmark = oldBookmark;
+    newBookmark.name = answers.name;
+    newBookmark.link = answers.URL;
+    newBookmark.icon = answers.icon;
+
+
+    editDataBase(newBookmark, 'bookmarksOS');
+    readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
 }
 
 
-let oldLink;
-const linkEditHandler = function (event, newLink) {
-    let which = event.target;
-    if (which) {
-        let key = event.target.dataset.editing;
-        readFromDataBase(key, 'linksOS', linkEditHandler);
-    }
-    if (!which) {
-        //console.log(oldLink);
-        if (!newLink) {
-            oldLink = event;
-            let questions = [
-                {
-                    type: 'text',
-                    askFor: 'name',
-                    default: oldLink.name
-                },
-                {
-                    type: 'text',
-                    askFor: 'icon',
-                    default: oldLink.icon
-                },
-                {
-                    type: 'button',
-                    askFor: 'delete'
-                }
-            ]
-            buildForm(questions, linkEditHandler);
+const linkEditHandler = async function (event) {
+
+    let key = event.target.dataset.editing;
+    let oldLink = await readFromDataBase(key, 'linksOS');
+
+    let questions = [
+        {
+            type: 'text',
+            askFor: 'name',
+            default: oldLink.name
+        },
+        {
+            type: 'text',
+            askFor: 'icon',
+            default: oldLink.icon
+        },
+        {
+            type: 'button',
+            askFor: 'delete'
         }
-        if (newLink) {
-            if (newLink !== 'delete') {
-                console.log(newLink.elements['name'].value, newLink.elements['icon'].value);
-                console.log(oldLink);
-                let newNewLink = oldLink;
-                newNewLink.name = newLink.elements['name'].value;
-                newNewLink.icon = newLink.elements['icon'].value;
-                editDataBase(newNewLink, 'linksOS');
-                readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
-            }
-            if (newLink == 'delete') {
-                removeFromDataBase(oldLink.ID, 'linksOS')
-                readAllFromDataBaseByIndex('belongsToIndex', oldLink.ID, 'bookmarksOS', removeAllFromDateBase);
-                readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
-                contentBox.innerHTML = '';
-            }
-        }
+    ]
+
+    let answers = await buildForm(questions);
+
+    if (answers == 'delete') {
+        removeFromDataBase(oldLink.ID, 'linksOS')
+        readAllFromDataBaseByIndex('belongsToIndex', oldLink.ID, 'bookmarksOS', removeAllFromDateBase);
+        readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
+        contentBox.innerHTML = '';
+        return;
     }
+    let newLink = oldLink;
+    newLink.name = answers.name;
+    newLink.icon = answers.icon;
+
+
+    editDataBase(newLink, 'linksOS');
+    readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
 }
 
 
@@ -337,127 +342,153 @@ function editModeUpdate() {
     }
 
     const bookmarksList = document.querySelectorAll('div#contentBox>table>tbody>tr');
-    const editBookmark = bookmarksList.forEach(bookmark => {
+    bookmarksList.forEach(bookmark => {
         bookmark.addEventListener('click', bookmarkEditHandler);
     })
 
-    const linkEditButtonsList = document.querySelectorAll('ul#navBar>li>i');
-    const editLink = linkEditButtonsList.forEach(link => {
+    const linkEditButtonsList = document.querySelectorAll('ul#navBar>li>i, ul#navBar>p');
+    linkEditButtonsList.forEach(link => {
         link.addEventListener('click', linkEditHandler);
-    })
-    const titleEditButtonsList = document.querySelectorAll('ul#navBar>p');
-    const editTitle = titleEditButtonsList.forEach(title => {
-        title.addEventListener('click', linkEditHandler);
     })
 }
 
 
 function buildForm(questions, callback) {
-    formBox.innerHTML = '';
-    const form = document.createElement('form');
-    const div = document.createElement('div');
-    const input = document.createElement('input');
-    const label = document.createElement('label');
-    const br = document.createElement('br');
-    questions.forEach(object => {
 
+    return new Promise(resolve => {
+
+        formBox.innerHTML = '';
+        const form = document.createElement('form');
         const div = document.createElement('div');
         const input = document.createElement('input');
         const label = document.createElement('label');
-        console.log(object);
+        const br = document.createElement('br');
+        questions.forEach(object => {
 
-        if (object.type == 'radio') {
-            console.log(object.options);
+            const div = document.createElement('div');
+            const input = document.createElement('input');
+            const label = document.createElement('label');
+            console.log(object);
 
-            for (let i in object.options) {
-                console.log(object.options[i]);
-                const input = document.createElement('input');
-                const label = document.createElement('label');
-                const br = document.createElement('br');
-                input.type = object.type;
-                input.id = object.options[i];
-                input.name = object.askFor;
+            if (object.type == 'radio') {
+                console.log(object.options);
 
-                label.setAttribute('for', object.options[i]);
-                label.innerText = object.options[i];
+                for (let i in object.options) {
+                    console.log(object.options[i]);
+                    const input = document.createElement('input');
+                    const label = document.createElement('label');
+                    const br = document.createElement('br');
+                    input.type = object.type;
+                    input.id = object.options[i];
+                    input.name = object.askFor;
 
-                if (div.childElementCount == 0) {
-                    input.checked = true;
+                    label.setAttribute('for', object.options[i]);
+                    label.innerText = object.options[i];
+
+                    if (div.childElementCount == 0) {
+                        input.checked = true;
+                    }
+
+                    div.append(input, label, br);
                 }
 
-                div.append(input, label, br);
+                form.append(div);
+
+
+            }
+            if (object.type == 'text') {
+                label.setAttribute('for', object.askFor);
+                label.innerText = object.askFor;
+
+                input.type = object.type;
+                input.id = object.askFor;
+                input.name = object.askFor;
+
+                if (object.default) {
+                    input.value = object.default;
+                }
+
+                div.append(label, input);
+                form.append(div);
+            }
+            if (object.type == 'button') {
+                input.type = object.type;
+                input.value = object.askFor;
+                input.name = object.askFor;
+                input.id = object.askFor + 'Button';
+
+                div.append(input);
+                form.append(div);
             }
 
-            form.append(div);
+        })
+
+        const subDel = `<input type="submit" value="create" name="submit"> <br>
+                        <input type="reset" value="cancel" name="cancel">`;
+        div.innerHTML = subDel;
+        form.append(div);
+
+        form.setAttribute('autocomplete', 'off');
+        form.id = 'form';
+        formBox.append(form);
 
 
-        }
-        if (object.type == 'text') {
-            label.setAttribute('for', object.askFor);
-            label.innerText = object.askFor;
 
-            input.type = object.type;
-            input.id = object.askFor;
-            input.name = object.askFor;
 
-            if (object.default) {
-                input.value = object.default;
+
+        formBox.classList.remove('hidden');
+        const formId = document.getElementById('form');
+
+        formId.addEventListener('submit', event => {
+            event.preventDefault();
+
+            if (formId.elements['name'].value) {
+
+                let inputs = formId.querySelectorAll('input')
+                let values = {};
+
+                inputs.forEach(input => {
+                    values[input.name] = input.value
+                })
+
+                if (callback) {
+                    console.warn('used a callback');
+                    callback('', formId);
+                }
+
+                if (!callback) {
+                    resolve(values);
+                }
+
+                formId.reset();
             }
 
-            div.append(label, input);
-            form.append(div);
-        }
-        if (object.type == 'button') {
-            input.type = object.type;
-            input.value = object.askFor;
-            input.name = object.askFor;
-            input.id = object.askFor + 'Button';
+        });
 
-            div.append(input);
-            form.append(div);
+        formId.addEventListener('reset', event => {
+            console.warn('canceled');
+            formBox.classList.add('hidden');
+            formBox.innerHTML = '';
+        });
+
+        let deleteButton = document.getElementById('deleteButton')
+        if (deleteButton) {
+            deleteButton.addEventListener('click', event => {
+                console.warn('deleted');
+
+                if (callback) {
+                    console.warn('used a callback');
+                    callback('', 'delete');
+                }
+
+                if (!callback) {
+                    resolve('delete');
+                }
+
+                formId.reset()
+            })
         }
 
     })
 
-    const subDel = `<input type="submit" value="create" name="submit"> <br>
-                    <input type="reset" value="cancel" name="cancel">`;
-    div.innerHTML = subDel;
-    form.append(div);
-
-    form.setAttribute('autocomplete', 'off');
-    form.id = 'form';
-    formBox.append(form);
-
-
-
-
-
-    formBox.classList.remove('hidden');
-    let formId = document.getElementById('form');
-    formId.addEventListener('submit', event => {
-        event.preventDefault();
-
-        if (formId.elements['name'].value) {
-            callback('', formId);
-            formId.reset();
-            formBox.classList.add('hidden');
-            formBox.innerHTML = '';
-        }
-
-    });
-
-    formId.addEventListener('reset', event => {
-        console.warn('canceled');
-        formBox.classList.add('hidden');
-        formBox.innerHTML = '';
-    });
-
-    let deleteButton = document.getElementById('deleteButton')
-    if (deleteButton) {
-        deleteButton.addEventListener('click', event => {
-            console.warn('deleted');
-            callback('', 'delete');
-            formId.reset()
-        })
-    }
 }
