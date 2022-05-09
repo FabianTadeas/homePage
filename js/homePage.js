@@ -78,12 +78,16 @@ export async function buildNavBar(data) {
                 ei.classList.add('ti-adjustments-horizontal')
                 ei.dataset.editing = object.ID;
                 li.append(ei);
+                li.draggable = true;
+                li.ondragstart = 'drag(event)';
             }
             li.dataset.order = object.order;
             navBar.appendChild(li);
         }
         if (object.type == 'title') {
-
+            if (editMode) {
+                p.draggable = true;
+            }
             p.innerText = object.name;
             p.dataset.editing = object.ID;
             p.dataset.order = object.order;

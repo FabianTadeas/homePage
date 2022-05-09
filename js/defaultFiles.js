@@ -53,9 +53,9 @@ export const defaultLinks = [
       ID: 'd',
       order: 7
     },
-  ];
+];
   
-  export const defaultBookmarks = [
+export const defaultBookmarks = [
     {
       name: 'YouTube',
       link: 'https://www.youtube.com/',
@@ -128,12 +128,20 @@ export const defaultLinks = [
       icon: 'rotate-clockwise',
       belongsTo: 'exampleA'
     },
-  ];
+];
   
-  export const defaultUserSettings = [
+export const defaultUserSettings = [
     {
       name: 'theme',
       themeList: ['darkTheme', 'lightTheme'],
       activeTheme: 0
     }
-  ]
+];
+
+export const themes = [
+  {
+    name: 'lightTheme',
+    colors: {}
+
+  }
+]
