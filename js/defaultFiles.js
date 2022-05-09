@@ -133,6 +133,7 @@ export const defaultLinks = [
   export const defaultUserSettings = [
     {
       name: 'theme',
-      lightTheme: false
+      themeList: ['darkTheme', 'lightTheme'],
+      activeTheme: 0
     }
   ]

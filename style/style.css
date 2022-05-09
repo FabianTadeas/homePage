@@ -11,7 +11,7 @@
     --listOdd:            #1B1E20;
     --transitionSpeed: 0.3s;
 }
-:root body.lightMode {
+:root body.lightTheme {
     --mainBgColor:        #EFF0F1;
     --accentColorHover:   #CBE3F0;
     --accentColorSelected:#3DAEE9;
@@ -27,7 +27,7 @@
     --accentColorHover:   #572e2e;
     --accentColorSelected:#e93d3d;
 }
-:root body.editMode.lightMode {
+:root body.editMode.lightTheme {
     --accentColorHover:   #f0cbcb;
     --accentColorSelected:#e93d3d;
 }

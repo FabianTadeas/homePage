@@ -210,6 +210,7 @@ div#contentBox table:not(.tableHeader) td {
     margin-bottom: 10px;
     padding-inline: 5px;
     padding-block: 10px;
+    height: auto;
 }
 
 #form {
@@ -227,11 +228,26 @@ div#contentBox table:not(.tableHeader) td {
     width: 100%;
 }
 
+#formBox input {
+    background-color: var(--listEven);
+    border: 1px solid var(--borderColor);
+}
+
+#formBox input:hover {
+    background-color: var(--accentColorHover);
+}
+
+#formBox input:focus {
+    background-color: var(--accentColorSelected);
+}
+
 #formBox input[type=text] {
     width: 100%;
 }
 
-
+#formBox input[type=button] {
+    width: 100%;
+}
 
 
 

@@ -8,40 +8,41 @@ let contentBox = document.getElementById("contentBox"),
     activeLinkId,
     navBar = document.getElementById('navBar'),
     highestNavBarOrder,
-    formBox = document.getElementById('formBox');
+    formBox = document.getElementById('formBox'),
+    previousLink,
+    previousLinkId,
+    activeLink;
 
 
-function NBListener() {
-    navBarLinksList.forEach(item => {
-        item.addEventListener('click', event => {
-            //adds and removes the selected class from navbar links
-            console.log('link clicked!')
-            contentBox.innerHTML = '';
-            if (item.id !== activeLinkId) {
-                if (activeLinkId) {
-                    let activeLink = document.getElementById(activeLinkId)
-                    if (activeLink) {
-                        activeLink.classList.remove('selected');
-                    }
-                }
-                activeLinkId = item.id;
-                document.getElementById(activeLinkId).classList.add('selected');
-
-                //deletes activeBox content and writes new
-                if (activeLinkId !== 'settings') {
-                    readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
-                } else {
-                    let settingsClone = document.getElementById('settingsMenu').cloneNode(true);
-                    contentBox.append(settingsClone);
-                    settingsOpen();
-                }
-            } else {
-                document.getElementById(activeLinkId).classList.remove('selected');
-                activeLinkId = undefined;
-            }
-
-        })
+const onClick = (event) => {
+    previousLinkId = activeLinkId;
+    activeLinkId = event.target.id;
+    activeLink = document.getElementById(activeLinkId);
+    previousLink = document.getElementById(previousLinkId);
+    if (previousLink == activeLink) {
+        activeLink = undefined;
+        activeLinkId = undefined;
+    }
+    NBupdate();
+}
+function NBupdate() {
+    console.log('updating nb listeners')
+    navBarLinksList = document.querySelectorAll('ul#navBar a:not(#addLink)');
+    
+    navBarLinksList.forEach(link => {
+        link.addEventListener('click', onClick);
     })
+
+    if (previousLink) {
+        previousLink.classList.remove('selected');
+    }
+
+    if (activeLink) {
+        activeLink.classList.add('selected');
+        buildTable()
+    } else {
+        contentBox.innerHTML = '';
+    }
 }
 
 
@@ -105,7 +106,14 @@ export async function buildNavBar(data) {
     }
 
     navBarLinksList = document.querySelectorAll('ul#navBar a:not(#addLink)');
-    NBListener();
+    if (activeLinkId) {
+        let activeLink = document.getElementById(activeLinkId)
+        if (activeLink) {
+            activeLink.classList.add('selected');
+        }
+    }
+
+    NBupdate();
     if (editMode) {
         editModeUpdate()
     }
@@ -114,15 +122,25 @@ export async function buildNavBar(data) {
 
 export async function buildTable(data) {
     
+    console.log('building table');
+    
+    contentBox.innerHTML = '';
+
     let content;
     if (data) {
         content = data;
     }
     if (!data) {
-        content = await readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
+        if (activeLinkId !== 'settings'){
+            content = await readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
+        } else {
+            let settingsClone = document.getElementById('settingsMenu').cloneNode(true);
+            contentBox.append(settingsClone);
+            settingsOpen();
+            return
+        }
     }
     
-    contentBox.innerHTML = ''
     const table = document.createElement('table');
     
     content.forEach((object) => {
@@ -177,71 +195,70 @@ export async function buildTable(data) {
 }
 
 
-const addLinkHandler = function (event, newLink) {
-    if (!newLink) {
-        let questions = [
-            {
-                type: 'radio',
-                askFor: 'type',
-                options: { linkName: 'link', titleName: 'title' },
-            },
-            {
-                type: 'text',
-                askFor: 'name',
-            },
-            {
-                type: 'text',
-                askFor: 'icon',
-                default: 'bookmark'
-            }
-        ]
-        buildForm(questions, addLinkHandler);
-    }
-    if (newLink) {
-        let link = {}
+const addLinkHandler = async function () {
 
-        if (newLink.elements['link'].checked) link.type = 'link';
+    let questions = [
+        {
+            type: 'radio',
+            askFor: 'type',
+            options: { linkName: 'link', titleName: 'title' },
+        },
+        {
+            type: 'text',
+            askFor: 'name',
+        },
+        {
+            type: 'text',
+            askFor: 'icon',
+            default: 'bookmark'
+        }
+    ]
+    let answers = await buildForm(questions);
 
-        if (newLink.elements['title'].checked) link.type = 'title';
+    let link = {};
 
-        link.name = newLink.elements['name'].value
-        link.icon = newLink.elements['icon'].value
-        link.ID = link.name + Date.now();
-        link.order = highestNavBarOrder + 1;
-        addToDataBase(link, 'linksOS');
-        readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
-    }
+    if (answers.link) link.type = 'link';
+
+    if (answers.title) link.type = 'title';
+
+    link.name = answers.name;
+    link.icon = answers.icon;
+    link.ID = link.name + Date.now();
+    link.order = highestNavBarOrder + 1;
+    addToDataBase(link, 'linksOS');
+    buildNavBar();
+
 }
 
 
-const addBookmarkHandler = function (event, newBookmark) {
-    if (!newBookmark) {
-        let questions = [
-            {
-                type: 'text',
-                askFor: 'name',
-            },
-            {
-                type: 'text',
-                askFor: 'URL',
-            },
-            {
-                type: 'text',
-                askFor: 'icon',
-            }
-        ]
-        buildForm(questions, addBookmarkHandler);
-    }
-    if (newBookmark) {
-        let bookmark = {}
+const addBookmarkHandler = async function () {
 
-        bookmark.name = newBookmark.elements['name'].value;
-        bookmark.icon = newBookmark.elements['icon'].value;
-        bookmark.link = newBookmark.elements['URL'].value;
-        bookmark.belongsTo = activeLinkId;
-        addToDataBase(bookmark, 'bookmarksOS');
-        readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
-    }
+    let questions = [
+        {
+            type: 'text',
+            askFor: 'name',
+        },
+        {
+            type: 'text',
+            askFor: 'URL',
+        },
+        {
+            type: 'text',
+            askFor: 'icon',
+        }
+    ]
+    let answers = await buildForm(questions);
+
+
+    let bookmark = {}
+
+    bookmark.name = answers.name;
+    bookmark.icon = answers.icon;
+    bookmark.link = answers.URL;
+    bookmark.belongsTo = activeLinkId;
+    addToDataBase(bookmark, 'bookmarksOS');
+    buildTable()
+
 }
 
 
@@ -276,7 +293,7 @@ const bookmarkEditHandler = async function (event) {
 
     if (answers == 'delete') {
         removeFromDataBase(oldBookmark.ID, 'bookmarksOS')
-        readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
+        buildTable()
         return;
     }
     let newBookmark = oldBookmark;
@@ -286,7 +303,7 @@ const bookmarkEditHandler = async function (event) {
 
 
     editDataBase(newBookmark, 'bookmarksOS');
-    readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS', buildTable);
+    buildTable()
 }
 
 
@@ -317,8 +334,11 @@ const linkEditHandler = async function (event) {
     if (answers == 'delete') {
         removeFromDataBase(oldLink.ID, 'linksOS')
         readAllFromDataBaseByIndex('belongsToIndex', oldLink.ID, 'bookmarksOS', removeAllFromDateBase);
-        readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
-        contentBox.innerHTML = '';
+        if (oldLink.ID == activeLinkId) {
+            activeLink = undefined;
+            activeLinkId = undefined;
+        }
+        buildNavBar();
         return;
     }
     let newLink = oldLink;
@@ -327,7 +347,7 @@ const linkEditHandler = async function (event) {
 
 
     editDataBase(newLink, 'linksOS');
-    readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
+    buildNavBar()
 }
 
 
@@ -446,20 +466,28 @@ function buildForm(questions, callback) {
 
                 let inputs = formId.querySelectorAll('input')
                 let values = {};
-
+                
                 inputs.forEach(input => {
-                    values[input.name] = input.value
+                    
+                    if (input.type == 'text') {
+                        values[input.id] = input.value;
+                    }
+                    
+                    if (input.type == 'radio') {
+                        values[input.id] = input.checked;
+                    }
                 })
+
+                console.log('form results:')
+                console.table(values);
 
                 if (callback) {
                     console.warn('used a callback');
                     callback('', formId);
                 }
 
-                if (!callback) {
-                    resolve(values);
-                }
-
+                resolve(values);
+                
                 formId.reset();
             }
 
@@ -481,9 +509,7 @@ function buildForm(questions, callback) {
                     callback('', 'delete');
                 }
 
-                if (!callback) {
-                    resolve('delete');
-                }
+                resolve('delete');
 
                 formId.reset()
             })

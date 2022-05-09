@@ -13,56 +13,31 @@ let db,
     requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 2);
 
 
-
-
-
-
-
 requestIDBOpen.onerror = event => {
     db = event.target.result;
     console.error('DBerror', db);
 }
 
 
-requestIDBOpen.onsuccess = event => {
+requestIDBOpen.onsuccess = async (event) => {
     db = event.target.result;
+
     console.log('DB init succes');
 
 
-    let txl = db.transaction('linksOS', 'readwrite');
-    let storel = txl.objectStore('linksOS');
-    let requestl = storel.getAll();
-    requestl.onsuccess = event => {
-        if (event.target.result.length == 0) {
-            defaultLinks.forEach((obj) => {
-                let req = storel.add(obj);
-            })
-        }
+    const settingsList = await readAllFromDataBaseByIndex(undefined, undefined, 'settingsOS');
+    if (settingsList.length == 0) {
+        defaultLinks.forEach((obj) => {
+            addToDataBase(obj, 'linksOS');
+        })
+        defaultBookmarks.forEach((obj) => {
+            addToDataBase(obj, 'bookmarksOS');
+        })
+        defaultUserSettings.forEach((obj) => {
+            addToDataBase(obj, 'settingsOS');
+        })
     }
 
-
-    let txb = db.transaction('bookmarksOS', 'readwrite');
-    let storeb = txb.objectStore('bookmarksOS');
-    let requestb = storeb.getAll();
-    requestb.onsuccess = event => {
-        if (event.target.result.length == 0) {
-            defaultBookmarks.forEach((obj) => {
-                let req = storeb.add(obj);
-            })
-        }
-    }
-
-
-    let txs = db.transaction('settingsOS', 'readwrite');
-    let stores = txs.objectStore('settingsOS');
-    let requests = stores.getAll();
-    requests.onsuccess = event => {
-        if (event.target.result.length == 0) {
-            defaultUserSettings.forEach((obj) => {
-                let req = stores.add(obj);
-            })
-        }
-    }
 
     loadTheme();
     buildNavBar();
@@ -93,10 +68,9 @@ export function addToDataBase(object, OSName) {
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
     let request = store.add(object);
+
     request.onsuccess = event => {
         console.log('successfully added an object');
-        //move on to the next request in the transaction or
-        //commit the transaction
     };
     request.onerror = error => {
         console.log('error in request to add');
@@ -111,6 +85,7 @@ export function removeFromDataBase(key, OSName) {
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
     let request = store.delete(key);
+
     request.onsuccess = event => {
         console.log('successfully removed an object');
         //move on to the next request in the transaction or
@@ -123,7 +98,10 @@ export function removeFromDataBase(key, OSName) {
 
 
 export function removeAllFromDateBase(objects) {
-    console.log('removing these objects:', objects);
+    
+    console.log('removing these objects:');
+    console.table(objects)
+
     objects.forEach(object => {
         removeFromDataBase(object.ID, 'bookmarksOS');
     })
@@ -143,14 +121,11 @@ export function readFromDataBase(key, OSName, callback) {
         request.onsuccess = event => {
             let object = event.target.result;
 
-            if (!callback) {
-                resolve(object);
-            }
-
             if (callback) {
                 console.warn('used a callback');
                 callback(object);
             }
+            resolve(object);
         }
         request.onerror = event => {
             let object = event.target.result;
@@ -179,14 +154,11 @@ export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
         request.onsuccess = event => {
             let object = event.target.result;
 
-            if (!callback) {
-                resolve(object);
-            }
-
             if (callback) {
                 console.warn('used a callback');
                 callback(object);
             }
+            resolve(object);
         }
         request.onerror = event => {
             let object = event.target.result;
@@ -197,10 +169,13 @@ export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
 
 
 export function editDataBase(object, OSName) {
+    
     console.log('editing object:', object, 'in:', OSName );
+
     let tx = db.transaction(OSName, 'readwrite');
     let store = tx.objectStore(OSName);
     let request = store.put(object);
+
     request.onsuccess = event => {
         console.log('successfully edited an object');
     };
