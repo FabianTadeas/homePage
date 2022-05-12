@@ -25,16 +25,16 @@ requestIDBOpen.onsuccess = async (event) => {
     console.log('DB init succes');
 
 
-    const settingsList = await readAllFromDataBaseByIndex(undefined, undefined, 'settingsOS');
+    const settingsList = await readAllFromDatabaseByIndex(undefined, undefined, 'settingsOS');
     if (settingsList.length == 0) {
         defaultLinks.forEach((obj) => {
-            addToDataBase(obj, 'linksOS');
+            addToDatabase(obj, 'linksOS');
         })
         defaultBookmarks.forEach((obj) => {
-            addToDataBase(obj, 'bookmarksOS');
+            addToDatabase(obj, 'bookmarksOS');
         })
         defaultUserSettings.forEach((obj) => {
-            addToDataBase(obj, 'settingsOS');
+            addToDatabase(obj, 'settingsOS');
         })
     }
 
@@ -49,7 +49,7 @@ requestIDBOpen.onupgradeneeded = event => {
     console.log('DBupgrade', db);
     if (!db.objectStoreNames.contains('linksOS')) {
         let linksObjectStore = db.createObjectStore('linksOS', { keyPath: 'ID' })
-        linksObjectStore.createIndex('orderIndex', 'order', { unique: true });
+        linksObjectStore.createIndex('orderIndex', 'order', { unique: false });
     }
     if (!db.objectStoreNames.contains('bookmarksOS')) {
         let bookmarksObjectStore = db.createObjectStore('bookmarksOS', { keyPath: 'ID', autoIncrement: 'true' })
@@ -61,7 +61,7 @@ requestIDBOpen.onupgradeneeded = event => {
 }
 
 
-export function addToDataBase(object, OSName) {
+export function addToDatabase(object, OSName) {
     
     console.log('adding:', object, 'to:', OSName);
 
@@ -78,7 +78,7 @@ export function addToDataBase(object, OSName) {
 }
 
 
-export function removeFromDataBase(key, OSName) {
+export function removeFromDatabase(key, OSName) {
     
     console.log('removing:', key, 'from:', OSName);
 
@@ -97,18 +97,18 @@ export function removeFromDataBase(key, OSName) {
 }
 
 
-export function removeAllFromDateBase(objects) {
+export function removeAllFromDatebase(objects) {
     
     console.log('removing these objects:');
     console.table(objects)
 
     objects.forEach(object => {
-        removeFromDataBase(object.ID, 'bookmarksOS');
+        removeFromDatabase(object.ID, 'bookmarksOS');
     })
 }
 
 
-export function readFromDataBase(key, OSName, callback) {
+export function readFromDatabase(key, OSName, callback) {
 
     return new Promise(resolve => {
 
@@ -135,7 +135,7 @@ export function readFromDataBase(key, OSName, callback) {
 }
 
 
-export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
+export function readAllFromDatabaseByIndex(indexName, range, OSName, callback) {
 
     return new Promise(resolve => {
 
@@ -168,7 +168,7 @@ export function readAllFromDataBaseByIndex(indexName, range, OSName, callback) {
 }
 
 
-export function editDataBase(object, OSName) {
+export function editDatabase(object, OSName, callback) {
     
     console.log('editing object:', object, 'in:', OSName );
 
@@ -178,6 +178,9 @@ export function editDataBase(object, OSName) {
 
     request.onsuccess = event => {
         console.log('successfully edited an object');
+        if (callback) {
+            callback();
+        }
     };
     request.onerror = error => {
         console.error(error);

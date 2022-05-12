@@ -101,7 +101,6 @@ a.add i {
 }
 
 
-
 /*  */
 
 /*right container and its content*/
@@ -264,7 +263,7 @@ div#contentBox table:not(.tableHeader) td {
     }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1000px) {
     #leftContainer {
         width: 50px;
         position: absolute;

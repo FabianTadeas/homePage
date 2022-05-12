@@ -1,5 +1,5 @@
 import { buildNavBar } from "./homePage.js";
-import { editDataBase, readAllFromDataBaseByIndex, readFromDataBase } from "./dataBase.js";
+import { editDatabase, readAllFromDatabaseByIndex, readFromDatabase } from "./dataBase.js";
 
 
 export let editMode = false,
@@ -8,7 +8,7 @@ export let editMode = false,
 
 export async function loadTheme() {
 
-    theme = await readFromDataBase('theme', 'settingsOS');
+    theme = await readFromDatabase('theme', 'settingsOS');
     const themeReadOut = document.getElementById('themeState');
     themeReadOut.innerHTML = theme.themeList[theme.activeTheme];
 
@@ -27,14 +27,14 @@ export function settingsOpen() {
         
         console.log('theme switched');
 
-        let theme = await readFromDataBase('theme', 'settingsOS');
+        let theme = await readFromDatabase('theme', 'settingsOS');
         
         theme.activeTheme += 1;
         if (theme.activeTheme >= theme.themeList.length) {
             theme.activeTheme = 0;
         }
 
-        editDataBase(theme, 'settingsOS');
+        editDatabase(theme, 'settingsOS');
 
         loadTheme();
     })
@@ -45,7 +45,7 @@ export function settingsOpen() {
     editModeToggle.addEventListener('click', event => {
         editMode = !editMode;
         document.body.classList.toggle('editMode');
-        readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS', buildNavBar);
+        buildNavBar();
     })
 
 

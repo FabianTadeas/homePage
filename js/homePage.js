@@ -1,4 +1,4 @@
-import { addToDataBase, readAllFromDataBaseByIndex, readFromDataBase, removeFromDataBase, editDataBase, removeAllFromDateBase } from './dataBase.js';
+import { addToDatabase, readAllFromDatabaseByIndex, readFromDatabase, removeFromDatabase, editDatabase, removeAllFromDatebase } from './dataBase.js';
 import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
 import { settingsOpen, editMode } from "./settings.js";
 
@@ -9,18 +9,13 @@ let contentBox = document.getElementById("contentBox"),
     navBar = document.getElementById('navBar'),
     highestNavBarOrder,
     formBox = document.getElementById('formBox'),
-    previousLink,
-    previousLinkId,
-    activeLink;
+    previousLinkId;
 
 
 const onClick = (event) => {
     previousLinkId = activeLinkId;
     activeLinkId = event.target.id;
-    activeLink = document.getElementById(activeLinkId);
-    previousLink = document.getElementById(previousLinkId);
-    if (previousLink == activeLink) {
-        activeLink = undefined;
+    if (previousLinkId == activeLinkId) {
         activeLinkId = undefined;
     }
     NBupdate();
@@ -28,6 +23,11 @@ const onClick = (event) => {
 function NBupdate() {
     console.log('updating nb listeners')
     navBarLinksList = document.querySelectorAll('ul#navBar a:not(#addLink)');
+     
+    let activeLink;
+    if (activeLinkId) activeLink = document.getElementById(activeLinkId);
+    let previousLink;
+    if (previousLinkId) previousLink = document.getElementById(previousLinkId);
     
     navBarLinksList.forEach(link => {
         link.addEventListener('click', onClick);
@@ -53,7 +53,7 @@ export async function buildNavBar(data) {
         content = data;
     }
     if (!data) {
-        content = await readAllFromDataBaseByIndex('orderIndex', undefined, 'linksOS');
+        content = await readAllFromDatabaseByIndex('orderIndex', undefined, 'linksOS');
     }
     
     navBar.innerHTML = '';
@@ -91,6 +91,7 @@ export async function buildNavBar(data) {
             p.innerText = object.name;
             p.dataset.editing = object.ID;
             p.dataset.order = object.order;
+            p.id = object.ID;
             navBar.appendChild(p);
         }
 
@@ -109,17 +110,10 @@ export async function buildNavBar(data) {
         navBar.appendChild(li);
     }
 
-    navBarLinksList = document.querySelectorAll('ul#navBar a:not(#addLink)');
-    if (activeLinkId) {
-        let activeLink = document.getElementById(activeLinkId)
-        if (activeLink) {
-            activeLink.classList.add('selected');
-        }
-    }
-
     NBupdate();
     if (editMode) {
-        editModeUpdate()
+        editModeUpdate();
+        linkOrder();
     }
 }
 
@@ -136,7 +130,7 @@ export async function buildTable(data) {
     }
     if (!data) {
         if (activeLinkId !== 'settings'){
-            content = await readAllFromDataBaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
+            content = await readAllFromDatabaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
         } else {
             let settingsClone = document.getElementById('settingsMenu').cloneNode(true);
             contentBox.append(settingsClone);
@@ -229,7 +223,7 @@ const addLinkHandler = async function () {
     link.icon = answers.icon;
     link.ID = link.name + Date.now();
     link.order = highestNavBarOrder + 1;
-    addToDataBase(link, 'linksOS');
+    addToDatabase(link, 'linksOS');
     buildNavBar();
 
 }
@@ -260,7 +254,7 @@ const addBookmarkHandler = async function () {
     bookmark.icon = answers.icon;
     bookmark.link = answers.URL;
     bookmark.belongsTo = activeLinkId;
-    addToDataBase(bookmark, 'bookmarksOS');
+    addToDatabase(bookmark, 'bookmarksOS');
     buildTable()
 
 }
@@ -269,7 +263,7 @@ const addBookmarkHandler = async function () {
 const bookmarkEditHandler = async function (event) {
 
     let key = parseInt(event.target.parentElement.id, 10);
-    let oldBookmark = await readFromDataBase(key, 'bookmarksOS');
+    let oldBookmark = await readFromDatabase(key, 'bookmarksOS');
 
     let questions = [
         {
@@ -296,7 +290,7 @@ const bookmarkEditHandler = async function (event) {
     let answers = await buildForm(questions);
 
     if (answers == 'delete') {
-        removeFromDataBase(oldBookmark.ID, 'bookmarksOS')
+        removeFromDatabase(oldBookmark.ID, 'bookmarksOS')
         buildTable()
         return;
     }
@@ -306,7 +300,7 @@ const bookmarkEditHandler = async function (event) {
     newBookmark.icon = answers.icon;
 
 
-    editDataBase(newBookmark, 'bookmarksOS');
+    editDatabase(newBookmark, 'bookmarksOS');
     buildTable()
 }
 
@@ -314,7 +308,7 @@ const bookmarkEditHandler = async function (event) {
 const linkEditHandler = async function (event) {
 
     let key = event.target.dataset.editing;
-    let oldLink = await readFromDataBase(key, 'linksOS');
+    let oldLink = await readFromDatabase(key, 'linksOS');
 
     let questions = [
         {
@@ -336,10 +330,9 @@ const linkEditHandler = async function (event) {
     let answers = await buildForm(questions);
 
     if (answers == 'delete') {
-        removeFromDataBase(oldLink.ID, 'linksOS')
-        readAllFromDataBaseByIndex('belongsToIndex', oldLink.ID, 'bookmarksOS', removeAllFromDateBase);
+        removeFromDatabase(oldLink.ID, 'linksOS')
+        readAllFromDatabaseByIndex('belongsToIndex', oldLink.ID, 'bookmarksOS', removeAllFromDatebase);
         if (oldLink.ID == activeLinkId) {
-            activeLink = undefined;
             activeLinkId = undefined;
         }
         buildNavBar();
@@ -350,7 +343,7 @@ const linkEditHandler = async function (event) {
     newLink.icon = answers.icon;
 
 
-    editDataBase(newLink, 'linksOS');
+    editDatabase(newLink, 'linksOS');
     buildNavBar()
 }
 
@@ -521,4 +514,86 @@ function buildForm(questions, callback) {
 
     })
 
+}
+
+
+
+function linkOrder() {
+    let draggableLinks = document.querySelectorAll("#navBar [draggable='true']");
+    
+    draggableLinks.forEach(link => {
+        link.addEventListener('dragstart', drgStart);
+    })
+    draggableLinks.forEach(link => {
+        link.addEventListener('drop', drgDrop);
+    })
+    draggableLinks.forEach(link => {
+        link.addEventListener('dragover', drgOver);
+    })
+    draggableLinks.forEach(link => {
+        link.addEventListener('dragenter', drgEnter);
+    })
+    draggableLinks.forEach(link => {
+        link.addEventListener('dragleave', drgLeave);
+    })
+}
+const drgEnter = (event) => {
+    event.target.closest('li').style.borderTop = '1px solid red';
+}
+const drgLeave = (event) => {
+    event.target.closest('li').style.borderTop = 'none';
+}
+const drgStart = (event) => {
+    event.dataTransfer.setData("order", event.target.dataset.order);
+    
+    console.log('drag started');
+}
+const drgOver = (event) => {
+    
+    event.preventDefault();
+
+    console.log(+event.target.closest("[draggable='true']").dataset.order);
+}
+const drgDrop = (event) => {
+    event.preventDefault();
+    let movedOrder = +event.dataTransfer.getData("order");
+    let newOrder = +event.target.closest("[draggable='true']").dataset.order;
+    reorderLinks(movedOrder, newOrder);
+
+}
+async function reorderLinks(movedOrder, newOrder) {
+    let movingDown = movedOrder < newOrder;
+    let movingUp = movedOrder > newOrder;
+    
+    if (movingUp) {
+        let range = [];
+        for (let i = newOrder; i < movedOrder; i++) {
+            range.push(i);
+        }
+        
+        range.forEach(async (order) => {
+            let link = await readAllFromDatabaseByIndex('orderIndex', order, 'linksOS');
+            link[0].order += 1;
+            editDatabase(link[0], 'linksOS');
+        })
+        
+    }
+
+    if (movingDown) {
+        let range = [];
+        for (let i = newOrder-1; i > movedOrder; i--) {
+            range.push(i);
+        }
+        console.table(range);
+        range.forEach(async (order) => {
+            let link = await readAllFromDatabaseByIndex('orderIndex', order, 'linksOS');
+            link[0].order -= 1;
+            editDatabase(link[0], 'linksOS');
+        })
+    }
+
+    let movedLink = await readAllFromDatabaseByIndex('orderIndex', movedOrder, 'linksOS');
+    movedLink[0].order = newOrder-1;
+    editDatabase(movedLink[0], 'linksOS', buildNavBar);
+   
 }
