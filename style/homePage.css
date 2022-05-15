@@ -283,7 +283,7 @@ div#contentBox table:not(.tableHeader) td {
     }
 }
 
-@media screen and (max-width: 1px) {
+@media screen and (max-width: 1200px) {
     #leftContainer {
         width: 50px;
         position: absolute;

@@ -20,10 +20,16 @@ const onClick = (event) => {
     }
     NBupdate();
 }
+const onExtLinkClick =(event) => {
+    let url = event.target.closest('table').dataset.url;
+    location.href = url;
+}
 function NBupdate() {
     console.log('updating nb listeners')
-    navBarLinksList = document.querySelectorAll('table.link:not(#addLink)');
+    navBarLinksList = document.querySelectorAll('table.link:not(#addLink, .extLink)');
+    let externalLinks = document.querySelectorAll('table.extLink');
 
+    console.table(navBarLinksList);
     let activeLink;
     if (activeLinkId) activeLink = document.getElementById(activeLinkId);
     let previousLink;
@@ -31,6 +37,10 @@ function NBupdate() {
     
     navBarLinksList.forEach(link => {
         link.addEventListener('click', onClick);
+    })
+
+    externalLinks.forEach(link => {
+        link.addEventListener('click', onExtLinkClick);
     })
 
     if (previousLink) {
@@ -91,6 +101,18 @@ export async function buildNavBar(data) {
             </table>
             `
         }
+        if(editMode && object.type == 'title') {
+            li.innerHTML = `
+            <table id="${object.ID}" class="${object.type}" data-editing="${object.ID}">
+            <tbody>
+                <tr>
+                    <td>${icon}</td>
+                    <td>${object.name}</td>
+                </tr>
+            </tbody>
+            </table>
+        `
+        }
 
         mainNavbar.appendChild(li);
         highestNavBarOrder = object.order;
@@ -124,12 +146,19 @@ export async function buildTable(data) {
         content = data;
     }
     if (!data) {
-        if (activeLinkId !== 'settings'){
-            content = await readAllFromDatabaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
-        } else {
-            let settingsClone = document.getElementById('settingsMenu').cloneNode(true);
-            contentBox.append(settingsClone);
-            settingsOpen();
+        
+        content = await readAllFromDatabaseByIndex('belongsToIndex', activeLinkId, 'bookmarksOS');
+        let activeLink = document.getElementById(activeLinkId)
+        
+        if (activeLink.classList.contains('predefinedLink')) {
+            
+            let clone = document.getElementById(`${activeLinkId}Menu`).cloneNode(true);
+            contentBox.append(clone);
+
+            if (activeLinkId == 'settings') {
+                settingsOpen();
+            }
+            
             return
         }
     }
