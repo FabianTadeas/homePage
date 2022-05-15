@@ -6,7 +6,7 @@ import { settingsOpen, editMode } from "./settings.js";
 let contentBox = document.getElementById("contentBox"),
     navBarLinksList,
     activeLinkId,
-    navBar = document.getElementById('navBar'),
+    mainNavbar = document.getElementById('mainNavbar'),
     highestNavBarOrder,
     formBox = document.getElementById('formBox'),
     previousLinkId;
@@ -14,7 +14,7 @@ let contentBox = document.getElementById("contentBox"),
 
 const onClick = (event) => {
     previousLinkId = activeLinkId;
-    activeLinkId = event.target.id;
+    activeLinkId = event.target.closest('table').id;
     if (previousLinkId == activeLinkId) {
         activeLinkId = undefined;
     }
@@ -22,8 +22,8 @@ const onClick = (event) => {
 }
 function NBupdate() {
     console.log('updating nb listeners')
-    navBarLinksList = document.querySelectorAll('ul#navBar a:not(#addLink)');
-     
+    navBarLinksList = document.querySelectorAll('table.link:not(#addLink)');
+
     let activeLink;
     if (activeLinkId) activeLink = document.getElementById(activeLinkId);
     let previousLink;
@@ -47,7 +47,8 @@ function NBupdate() {
 
 
 export async function buildNavBar(data) {
-    
+    console.log('building nav bar');
+
     let content;
     if (data) {
         content = data;
@@ -56,64 +57,58 @@ export async function buildNavBar(data) {
         content = await readAllFromDatabaseByIndex('orderIndex', undefined, 'linksOS');
     }
     
-    navBar.innerHTML = '';
+    mainNavbar.innerHTML = '';
     
     content.forEach((object) => {
-        const a = document.createElement('a');
-        const i = document.createElement('i');
-        const li = document.createElement('li');
-        const p = document.createElement('p');
-        if (object.type == 'link') {
-            a.id = object.ID;
-            if (object.icon) {
-                i.classList.add('ti')
-                i.classList.add('ti-' + object.icon)
-                a.append(i);
-            }
-            a.append(object.name);
-            li.append(a);
-            if (editMode && object.ID !== 'settings') {
-                const ei = document.createElement('i');
-                ei.classList.add('ti')
-                ei.classList.add('ti-adjustments-horizontal')
-                ei.dataset.editing = object.ID;
-                li.append(ei);
-                li.draggable = true;
-                li.ondragstart = 'drag(event)';
-            }
-            li.dataset.order = object.order;
-            navBar.appendChild(li);
-        }
-        if (object.type == 'title') {
-            if (editMode) {
-                p.draggable = true;
-            }
-            p.innerText = object.name;
-            p.dataset.editing = object.ID;
-            p.dataset.order = object.order;
-            p.id = object.ID;
-            navBar.appendChild(p);
+        let li = document.createElement('li');
+        let icon;
+        li.dataset.order = object.order
+        if(object.icon && object.type == 'link') {
+            icon = `<i class="ti ti-${object.icon}"></i>`;
+        } else {
+            icon = '';
         }
 
+        li.innerHTML = `
+        <table id="${object.ID}" class="${object.type}">
+        <tbody>
+          <tr>
+            <td>${icon}</td>
+            <td>${object.name}</td>
+          </tr>
+        </tbody>
+        </table>
+        `
+        if(editMode && object.type == 'link') {
+            li.innerHTML = `
+            ${li.innerHTML}
+            <table class="editButton" data-editing="${object.ID}">
+            <tbody>
+                <tr>
+                    <td><i class="ti ti-adjustments-horizontal"></i></td>
+                </tr>
+            </tbody>
+            </table>
+            `
+        }
+
+        mainNavbar.appendChild(li);
         highestNavBarOrder = object.order;
     })
     if (editMode) {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        const i = document.createElement('i');
-        i.classList.add('ti');
-        i.classList.add('ti-circle-plus');
-        a.id = 'addLink';
-        a.classList.add('add');
-        a.append(i);
-        li.append(a);
-        navBar.appendChild(li);
+        let li = document.createElement('li')
+        li.innerHTML = `
+        <table id="addLink" class="link">
+            <tr>
+                <td><i class="ti ti-circle-plus"></i></td>
+            </tr>
+        </table>`
+        mainNavbar.appendChild(li);
     }
 
     NBupdate();
     if (editMode) {
         editModeUpdate();
-        linkOrder();
     }
 }
 
@@ -175,16 +170,9 @@ export async function buildTable(data) {
 
     })
     if (editMode) {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        const i = document.createElement('i');
-        i.classList.add('ti');
-        i.classList.add('ti-playlist-add');
-        a.id = 'addBookmark';
-        a.classList.add('add');
-        a.append(i);
-        li.append(a);
-        table.appendChild(li);
+        const tr = table.insertRow();
+        tr.id = 'addBookmark'
+        tr.innerHTML = `<td><i class="ti ti-playlist-add"></i></td>`
     }
     contentBox.append(table);
     if (editMode) {
@@ -307,7 +295,7 @@ const bookmarkEditHandler = async function (event) {
 
 const linkEditHandler = async function (event) {
 
-    let key = event.target.dataset.editing;
+    let key = event.target.closest('table').dataset.editing;
     let oldLink = await readFromDatabase(key, 'linksOS');
 
     let questions = [
@@ -363,10 +351,12 @@ function editModeUpdate() {
         bookmark.addEventListener('click', bookmarkEditHandler);
     })
 
-    const linkEditButtonsList = document.querySelectorAll('ul#navBar>li>i, ul#navBar>p');
+    const linkEditButtonsList = document.querySelectorAll('table.editButton, table.title');
     linkEditButtonsList.forEach(link => {
         link.addEventListener('click', linkEditHandler);
     })
+
+    linkOrder()
 }
 
 
@@ -519,7 +509,7 @@ function buildForm(questions, callback) {
 
 
 function linkOrder() {
-    let draggableLinks = document.querySelectorAll("#navBar [draggable='true']");
+    let draggableLinks = document.querySelectorAll("#mainNavbar [draggable='true']");
     
     draggableLinks.forEach(link => {
         link.addEventListener('dragstart', drgStart);

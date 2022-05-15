@@ -10,6 +10,8 @@
     --listEven:           #232629;
     --listOdd:            #1B1E20;
     --transitionSpeed: 0.3s;
+    --fontSize: 15px;
+    font-size: var(--fontSize);
 }
 :root body.lightTheme {
     --mainBgColor:        #EFF0F1;

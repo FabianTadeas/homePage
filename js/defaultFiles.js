@@ -1,9 +1,8 @@
 export const defaultLinks = [
     {
-      name: 'Settings',
-      icon: 'adjustments-horizontal',
-      type: 'link',
-      ID: 'settings',
+      name: 'hello',
+      type: 'title',
+      ID: 'aaahhhhhhhhhh',
       order: 0
     },
     {
