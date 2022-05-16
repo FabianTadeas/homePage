@@ -111,7 +111,10 @@ export async function buildNavBar(data) {
                 </tr>
             </tbody>
             </table>
-        `
+            `
+        }
+        if (editMode) {
+            li.draggable = true
         }
 
         mainNavbar.appendChild(li);
@@ -538,7 +541,7 @@ function buildForm(questions, callback) {
 
 
 function linkOrder() {
-    let draggableLinks = document.querySelectorAll("#mainNavbar [draggable='true']");
+    const draggableLinks = document.querySelectorAll("#mainNavbar [draggable='true']");
     
     draggableLinks.forEach(link => {
         link.addEventListener('dragstart', drgStart);
@@ -555,30 +558,39 @@ function linkOrder() {
     draggableLinks.forEach(link => {
         link.addEventListener('dragleave', drgLeave);
     })
+
+    const addButt = document.getElementById('addLink');
+    addButt.addEventListener('dragenter', drgEnter);
+    addButt.addEventListener('dragleave', drgLeave);
+    addButt.addEventListener('dragover', drgOver);
+    addButt.addEventListener('drop', drgDrop);
 }
 const drgEnter = (event) => {
-    event.target.closest('li').style.borderTop = '1px solid red';
+    event.target.closest('li').classList.add('isBeingDraggedOver');
 }
 const drgLeave = (event) => {
-    event.target.closest('li').style.borderTop = 'none';
+    event.target.closest('li').classList.remove('isBeingDraggedOver');
 }
 const drgStart = (event) => {
     event.dataTransfer.setData("order", event.target.dataset.order);
     
-    console.log('drag started');
+    console.log('drag started', event.target.dataset.order);
 }
 const drgOver = (event) => {
-    
     event.preventDefault();
-
-    console.log(+event.target.closest("[draggable='true']").dataset.order);
 }
 const drgDrop = (event) => {
     event.preventDefault();
     let movedOrder = +event.dataTransfer.getData("order");
-    let newOrder = +event.target.closest("[draggable='true']").dataset.order;
-    reorderLinks(movedOrder, newOrder);
+    let newOrder;
+    if (event.target.closest("li[draggable='true']")) newOrder = +event.target.closest("[draggable='true']").dataset.order;
+    if (event.target.closest("table").id == 'addLink') newOrder = highestNavBarOrder+1;
+    
+    console.log(movedOrder, newOrder);
 
+    if (movedOrder !== newOrder) {
+        reorderLinks(movedOrder, newOrder);
+    }
 }
 async function reorderLinks(movedOrder, newOrder) {
     let movingDown = movedOrder < newOrder;
@@ -587,32 +599,40 @@ async function reorderLinks(movedOrder, newOrder) {
     if (movingUp) {
         let range = [];
         for (let i = newOrder; i < movedOrder; i++) {
-            range.push(i);
+            range.push(i); 
         }
+        console.table(range);
         
+        let movedLink = await readAllFromDatabaseByIndex('orderIndex', movedOrder, 'linksOS');
+        console.log(newOrder)
+        movedLink[0].order = newOrder;
+
         range.forEach(async (order) => {
             let link = await readAllFromDatabaseByIndex('orderIndex', order, 'linksOS');
             link[0].order += 1;
             editDatabase(link[0], 'linksOS');
         })
-        
+
+        editDatabase(movedLink[0], 'linksOS', buildNavBar);
     }
 
     if (movingDown) {
         let range = [];
         for (let i = newOrder-1; i > movedOrder; i--) {
-            range.push(i);
+            range.push(i); 
         }
         console.table(range);
+
+        let movedLink = await readAllFromDatabaseByIndex('orderIndex', movedOrder, 'linksOS');
+        console.log(newOrder)
+        movedLink[0].order = newOrder-1;
+
         range.forEach(async (order) => {
             let link = await readAllFromDatabaseByIndex('orderIndex', order, 'linksOS');
             link[0].order -= 1;
             editDatabase(link[0], 'linksOS');
         })
-    }
 
-    let movedLink = await readAllFromDatabaseByIndex('orderIndex', movedOrder, 'linksOS');
-    movedLink[0].order = newOrder-1;
-    editDatabase(movedLink[0], 'linksOS', buildNavBar);
-   
+        editDatabase(movedLink[0], 'linksOS', buildNavBar);
+    }
 }
