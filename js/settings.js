@@ -49,8 +49,29 @@ export function settingsOpen() {
     })
 
 
+    let ukrToggle = document.getElementById('ukrToggle');
+    ukrToggle.addEventListener('click', async (event) => {
+        
+        let ukraineObj = await readFromDatabase('ukraine', 'settingsOS');
+        
+        ukraineObj.active = !ukraineObj.active;
+        
+        editDatabase(ukraineObj, 'settingsOS');
+
+        loadUkr()
+    })
+
+
 }
 
 
+export async function loadUkr() {
 
+    console.log('loading ukr')
+
+    let ukraineObj = await readFromDatabase('ukraine', 'settingsOS');
+
+    if (ukraineObj.active) document.getElementById('ukraine').classList.remove('hidden')
+    if (!ukraineObj.active) document.getElementById('ukraine').classList.add('hidden')
+}
 

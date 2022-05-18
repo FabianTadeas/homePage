@@ -134,6 +134,10 @@ export const defaultUserSettings = [
       name: 'theme',
       themeList: ['darkTheme', 'lightTheme'],
       activeTheme: 0
+    },
+    {
+      name: 'ukraine',
+      active: false
     }
 ];
 

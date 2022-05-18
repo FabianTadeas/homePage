@@ -539,7 +539,6 @@ function buildForm(questions, callback) {
 }
 
 
-
 function linkOrder() {
     const draggableLinks = document.querySelectorAll("#mainNavbar [draggable='true']");
     
@@ -587,7 +586,7 @@ const drgDrop = (event) => {
     if (event.target.closest("table").id == 'addLink') newOrder = highestNavBarOrder+1;
     
     console.log(movedOrder, newOrder);
-
+    event.target.closest('li').classList.remove('isBeingDraggedOver');
     if (movedOrder !== newOrder) {
         reorderLinks(movedOrder, newOrder);
     }

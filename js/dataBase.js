@@ -1,6 +1,6 @@
 import { buildNavBar, buildTable } from "./homePage.js";
 import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
-import { loadTheme } from "./settings.js";
+import { loadTheme, loadUkr } from "./settings.js";
 
 
 
@@ -41,6 +41,7 @@ requestIDBOpen.onsuccess = async (event) => {
 
     loadTheme();
     buildNavBar();
+    loadUkr();
 }
 
 
