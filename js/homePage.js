@@ -1,5 +1,4 @@
 import { addToDatabase, readAllFromDatabaseByIndex, readFromDatabase, removeFromDatabase, editDatabase, removeAllFromDatebase } from './dataBase.js';
-import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
 import { settingsOpen, editMode } from "./settings.js";
 
 

@@ -1,0 +1,112 @@
+{
+    "defaultLinks": [
+        {
+            "name": "example Title1",
+            "type": "title",
+            "ID": "example0",
+            "order": 0
+        },
+        {
+            "name": "example Link1",
+            "icon": "star",
+            "type": "link",
+            "ID": "example1",
+            "order": 1
+        },
+        {
+            "name": "example Link2",
+            "icon": "circle",
+            "type": "link",
+            "ID": "example2",
+            "order": 2
+        },
+        {
+            "name": "example Link3",
+            "icon": "square",
+            "type": "link",
+            "ID": "example3",
+            "order": 3
+        },
+        {
+            "name": "example Title2",
+            "type": "title",
+            "ID": "example4",
+            "order": 4
+        },
+        {
+            "name": "example Link4",
+            "icon": "triangle",
+            "type": "link",
+            "ID": "example5",
+            "order": 5
+        }
+    ],
+    "defaultBookmarks": [
+        {
+            "name": "YouTube0",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example1"
+        },
+        {
+            "name": "YouTube1",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example1"
+        },
+        {
+            "name": "YouTube2",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example1"
+        },
+        {
+            "name": "YouTube3",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example1"
+        },
+        {
+            "name": "YouTube0",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example2"
+        },
+        {
+            "name": "YouTube1",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example3"
+        },
+        {
+            "name": "YouTube2",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example5"
+        },
+        {
+            "name": "YouTube3",
+            "link": "https://www.youtube.com/",
+            "icon": "brand-youtube",
+            "belongsTo": "example5"
+        }
+    ],
+    "defaultUserSettings": [
+        {
+            "name": "theme",
+            "themeList": ["darkTheme", "lightTheme"],
+            "activeTheme": 0
+        },
+        {
+            "name": "ukraine",
+            "active": false
+        }
+    ],
+    "themes": [
+        {
+            "name": "lightTheme",
+            "colors": {}
+        
+        }
+    ]
+}

@@ -1,7 +1,5 @@
 import { buildNavBar, buildTable } from "./homePage.js";
-import { defaultLinks, defaultBookmarks, defaultUserSettings } from './defaultFiles.js';
 import { loadTheme, loadUkr } from "./settings.js";
-
 
 
 if (!window.indexedDB) {
@@ -27,13 +25,17 @@ requestIDBOpen.onsuccess = async (event) => {
 
     const settingsList = await readAllFromDatabaseByIndex(undefined, undefined, 'settingsOS');
     if (settingsList.length == 0) {
-        defaultLinks.forEach((obj) => {
+        
+        const response = await fetch("./js/defaultConfig.json");
+        const defaultConfig = await response.json();
+        
+        defaultConfig.defaultLinks.forEach((obj) => {
             addToDatabase(obj, 'linksOS');
         })
-        defaultBookmarks.forEach((obj) => {
+        defaultConfig.defaultBookmarks.forEach((obj) => {
             addToDatabase(obj, 'bookmarksOS');
         })
-        defaultUserSettings.forEach((obj) => {
+        defaultConfig.defaultUserSettings.forEach((obj) => {
             addToDatabase(obj, 'settingsOS');
         })
     }
