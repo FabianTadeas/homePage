@@ -189,3 +189,18 @@ export function editDatabase(object, OSName, callback) {
         console.error(error);
     };
 }
+
+
+export function purgeObjectStore(OSName) {
+    return new Promise(resolve => {
+        console.log(`removing everything from ${OSName}`);
+        
+        let tx = db.transaction(OSName, "readwrite");
+        let store = tx.objectStore(OSName);
+        var request = store.clear();
+
+        request.onsuccess = event => {
+            resolve();
+        };
+    })
+}

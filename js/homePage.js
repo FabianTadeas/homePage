@@ -634,3 +634,19 @@ async function reorderLinks(movedOrder, newOrder) {
         editDatabase(movedLink[0], 'linksOS', buildNavBar);
     }
 }
+
+
+export function download(fileName, text) {
+    console.log('downloading')
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + text);
+    element.setAttribute('download', fileName);
+
+    element.style.display = 'none';
+    
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
