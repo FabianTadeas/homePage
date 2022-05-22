@@ -364,6 +364,13 @@ const linkEditHandler = async function (event) {
         if (oldLink.ID == activeLinkId) {
             activeLinkId = undefined;
         }
+        let links = await readAllFromDatabaseByIndex('orderIndex', undefined, 'linksOS');
+        links.forEach(link => {
+            if (link.order > oldLink.order) {
+                link.order --;
+                editDatabase(link, 'linksOS');
+            }
+        })
         buildNavBar();
         return;
     }
