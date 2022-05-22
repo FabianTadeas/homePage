@@ -1,5 +1,5 @@
-import { buildNavBar, buildTable } from "./homePage.js";
-import { loadTheme, loadUkr } from "./settings.js";
+//import { buildNavBar } from "./homePage.js";
+//import { loadTheme, loadUkr } from "./settings.js";
 
 
 if (!window.indexedDB) {
@@ -8,8 +8,12 @@ if (!window.indexedDB) {
 
 
 let db,
-    requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 2);
+    requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 2),
+    callbacks;
 
+export function onDatabaseInitCall(data) {
+    callbacks = data;
+}
 
 requestIDBOpen.onerror = event => {
     db = event.target.result;
@@ -40,10 +44,12 @@ requestIDBOpen.onsuccess = async (event) => {
         })
     }
 
-
-    loadTheme();
-    buildNavBar();
-    loadUkr();
+    for (const moduleName in callbacks) {
+        const importedModule = await import(moduleName);
+        callbacks[moduleName].forEach(call => {
+            importedModule[call]();
+        })
+    }
 }
 
 

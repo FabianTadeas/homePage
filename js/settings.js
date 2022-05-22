@@ -1,11 +1,10 @@
 import { buildNavBar, download } from "./homePage.js";
 import { addToDatabase, editDatabase, purgeObjectStore, readAllFromDatabaseByIndex, readFromDatabase } from "./dataBase.js";
 
-
 export let editMode = false,
            theme;
 
-
+console.log('settings imported')
 export async function loadTheme() {
 
     theme = await readFromDatabase('theme', 'settingsOS');

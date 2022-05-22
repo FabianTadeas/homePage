@@ -1,14 +1,24 @@
-import { addToDatabase, readAllFromDatabaseByIndex, readFromDatabase, removeFromDatabase, editDatabase, removeAllFromDatebase } from './dataBase.js';
-import { settingsOpen, editMode } from "./settings.js";
+import { addToDatabase, readAllFromDatabaseByIndex, readFromDatabase, removeFromDatabase, editDatabase, removeAllFromDatebase, onDatabaseInitCall } from './dataBase.js';
+import { settingsOpen, editMode, loadTheme } from "./settings.js";
 
+let DBInitCalls = {
+    './homePage.js': ['buildNavBar'],
+    './settings.js': ['loadTheme', 'loadUkr']
+}
+
+onDatabaseInitCall(DBInitCalls);
 
 let contentBox = document.getElementById("contentBox"),
     navBarLinksList,
     activeLinkId,
     mainNavbar = document.getElementById('mainNavbar'),
-    highestNavBarOrder,
+    highestNavBarOrder = -1,
     formBox = document.getElementById('formBox'),
-    previousLinkId;
+    previousLinkId,
+    footerLinks = document.querySelectorAll('#footerNavbar>li'),
+    root = document.querySelector(':root');
+
+root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
 
 
 const onClick = (event) => {

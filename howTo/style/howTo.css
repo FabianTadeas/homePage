@@ -1,4 +1,4 @@
-.box {
+/* .box {
     transition: var(--transitionSpeed);
     box-sizing: border-box;
     background-color: var(--divBgcolor);
@@ -27,4 +27,4 @@ body>hr {
 h1 {
     margin-left: 5%;
     color: var(--textColorFaded);
-}
+} */
