@@ -48,15 +48,11 @@ for (let i = 0; i < anchors.length; i++) {
         anchors[i].end = contentBox.scrollHeight;
     }
 }
-console.table(anchors)
+console.table(anchors);
 
 
 contentBox.onscroll = () => {
-    
     let currentDepth = contentBox.scrollTop;
-
-    //console.log(currentDepth);
-
     anchors.forEach(anchor => {
         let link = document.querySelector(`table[data-url="${anchor.url}"]`)
         link.classList.remove('selected');
@@ -64,5 +60,4 @@ contentBox.onscroll = () => {
             link.classList.add('selected');
         }
     })
-    
 }

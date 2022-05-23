@@ -64,6 +64,28 @@ body {
     z-index: 999;
 }
 
+.center {
+    width: 100%;
+    text-align: center;
+}
+
+a {
+    color: var(--textColorFaded);
+    transition: var(--transitionSpeed);
+    text-decoration: none;
+}
+
+a:link {
+    color: var(--textColorFaded);
+}
+
+a:visited {
+    color: var(--textColorFaded);
+}
+
+a:hover {
+    color: var(--textColor);
+}
 
 
 /* ! */

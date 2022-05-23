@@ -1,19 +1,19 @@
 #contentBox {
     scroll-behavior: smooth;
+    padding-inline: 5%;
+    padding-block: 5rem;
 }
 
 #contentBox>hr {
-    width: 90%;
+    width: 100%;
     border: none;
     border-bottom: 1px solid var(--borderColor);
 }
 
 h1 {
-    margin-left: 5%;
     color: var(--textColorFaded);
 }
 
 p {
     margin-left: 5%;
-    padding-left: 5%;
 }
