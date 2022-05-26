@@ -1,21 +1,33 @@
 import { buildNavBar, download } from "./homePage.js";
 import { addToDatabase, editDatabase, purgeObjectStore, readAllFromDatabaseByIndex, readFromDatabase } from "./dataBase.js";
 
-export let editMode = false,
-           theme;
+export let editMode = false;
 
-console.log('settings imported')
+console.log('settings imported');
+
+const editModeToggleB = document.getElementById('editModeToggleB');
+editModeToggleB.addEventListener('click', (event) => {
+    editMode = !editMode;
+    editModeToggleB.classList.toggle('selected');
+    document.body.classList.toggle('editMode');
+    buildNavBar();
+})
+
 export async function loadTheme() {
-
-    theme = await readFromDatabase('theme', 'settingsOS');
+    
+    let theme = await readFromDatabase('theme', 'settingsOS');
     const themeReadOut = document.getElementById('themeState');
     themeReadOut.innerHTML = theme.themeList[theme.activeTheme];
+    
+    let root = document.querySelector(':root');
+    let rootInEditmode = document.querySelector('body.editMode :root');
+    let themeColors = await readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
 
-    theme.themeList.forEach((obj) => {
-        document.body.classList.remove(obj);
-    })
+    
 
-    document.body.classList.add(theme.themeList[theme.activeTheme]);
+    for (const color in themeColors.colors) {
+        root.style.setProperty(`--${color}`, themeColors.colors[color]);
+    }
 }
 
 
@@ -78,10 +90,10 @@ export function settingsOpen() {
 
     let dropProfile = document.getElementById('dropProfileArea')
     dropProfile.addEventListener('dragover', (event) => {
-        //if (event.dataTransfer.items[0].type == 'application/json') {
-            console.log(event.dataTransfer);
-            event.preventDefault();
-        //}
+        
+        console.log(event.dataTransfer);
+        event.preventDefault();
+        
     })
     dropProfile.addEventListener('drop', async (event) => {
         event.preventDefault();
@@ -106,7 +118,6 @@ export function settingsOpen() {
         location.reload(); 
     })
 }
-
 
 
 export async function loadUkr() {

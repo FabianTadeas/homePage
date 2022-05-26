@@ -1,5 +1,5 @@
 import { addToDatabase, readAllFromDatabaseByIndex, readFromDatabase, removeFromDatabase, editDatabase, removeAllFromDatebase, onDatabaseInitCall } from './dataBase.js';
-import { settingsOpen, editMode, loadTheme } from "./settings.js";
+import { settingsOpen, editMode } from "./settings.js";
 
 let DBInitCalls = {
     './homePage.js': ['buildNavBar'],
@@ -9,7 +9,7 @@ let DBInitCalls = {
 onDatabaseInitCall(DBInitCalls);
 
 let contentBox = document.getElementById("contentBox"),
-    navBarLinksList,
+    navBarIntLinksList,
     activeLinkId,
     mainNavbar = document.getElementById('mainNavbar'),
     highestNavBarOrder = -1,
@@ -19,7 +19,6 @@ let contentBox = document.getElementById("contentBox"),
     root = document.querySelector(':root');
 
 root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
-
 
 const onClick = (event) => {
     previousLinkId = activeLinkId;
@@ -35,16 +34,16 @@ const onExtLinkClick =(event) => {
 }
 function NBupdate() {
     console.log('updating nb listeners')
-    navBarLinksList = document.querySelectorAll('table.link:not(#addLink, .extLink)');
+    navBarIntLinksList = document.querySelectorAll('table.link:not(#addLink, .extLink)');
+    let navbarLinksList = document.querySelectorAll('#mainNavbar>li>table:not(#addLink)');
     let externalLinks = document.querySelectorAll('table.extLink');
 
-    console.table(navBarLinksList);
     let activeLink;
     if (activeLinkId) activeLink = document.getElementById(activeLinkId);
     let previousLink;
     if (previousLinkId) previousLink = document.getElementById(previousLinkId);
     
-    navBarLinksList.forEach(link => {
+    navBarIntLinksList.forEach(link => {
         link.addEventListener('click', onClick);
     })
 
@@ -79,17 +78,21 @@ export async function buildNavBar(data) {
     mainNavbar.innerHTML = '';
     
     content.forEach((object) => {
-        let li = document.createElement('li');
-        let icon;
+        let li = document.createElement('li'),
+            icon,
+            url = '';
         li.dataset.order = object.order
-        if(object.icon && object.type == 'link') {
+        if(object.icon && (object.type == 'link' || 'link extLink')) {
             icon = `<i class="ti ti-${object.icon}"></i>`;
         } else {
             icon = '';
         }
+        if (object.url) {
+            url = `data-url="${object.url}"`;
+        }
 
         li.innerHTML = `
-        <table id="${object.ID}" class="${object.type}">
+        <table id="${object.ID}" class="${object.type}" ${url}>
         <tbody>
           <tr>
             <td>${icon}</td>
@@ -98,7 +101,7 @@ export async function buildNavBar(data) {
         </tbody>
         </table>
         `
-        if(editMode && object.type == 'link') {
+        if(editMode && (object.type == 'link' || 'link extLink')) {
             li.innerHTML = `
             ${li.innerHTML}
             <table class="editButton" data-editing="${object.ID}">
@@ -228,7 +231,11 @@ const addLinkHandler = async function () {
         {
             type: 'radio',
             askFor: 'type',
-            options: { linkName: 'link', titleName: 'title' },
+            options: { linkName: 'link', titleName: 'title', externalLink: 'extLink' },
+        },
+        {
+            type: 'text',
+            askFor: 'url'
         },
         {
             type: 'text',
@@ -248,6 +255,9 @@ const addLinkHandler = async function () {
 
     if (answers.title) link.type = 'title';
 
+    if (answers.extLink) link.type = 'link extLink';
+
+    link.url = answers.url;
     link.name = answers.name;
     link.icon = answers.icon;
     link.ID = link.name + Date.now();
@@ -614,7 +624,7 @@ async function reorderLinks(movedOrder, newOrder) {
     if (movingUp) {
         let range = [];
         for (let i = newOrder; i < movedOrder; i++) {
-            range.push(i); 
+            range.push(i);
         }
         console.table(range);
         

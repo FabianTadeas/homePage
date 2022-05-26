@@ -1,10 +1,9 @@
 #contentBox {
     scroll-behavior: smooth;
     padding-inline: 5%;
-    padding-block: 5rem;
 }
 
-#contentBox>hr {
+hr {
     width: 100%;
     border: none;
     border-bottom: 1px solid var(--borderColor);
@@ -16,4 +15,8 @@ h1 {
 
 p {
     margin-left: 5%;
+}
+
+footer {
+    height: 5rem;
 }

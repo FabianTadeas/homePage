@@ -1,14 +1,10 @@
-//import { buildNavBar } from "./homePage.js";
-//import { loadTheme, loadUkr } from "./settings.js";
-
-
 if (!window.indexedDB) {
     alert("Your browser doesn't support IndexedDB.");
 }
 
 
 let db,
-    requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 2),
+    requestIDBOpen = window.indexedDB.open("LinksAndBookMarksDB", 1),
     callbacks;
 
 export function onDatabaseInitCall(data) {
@@ -42,6 +38,9 @@ requestIDBOpen.onsuccess = async (event) => {
         defaultConfig.defaultUserSettings.forEach((obj) => {
             addToDatabase(obj, 'settingsOS');
         })
+        defaultConfig.themes.forEach((obj) => {
+            addToDatabase(obj, 'themesOS');
+        })
     }
 
     for (const moduleName in callbacks) {
@@ -66,6 +65,9 @@ requestIDBOpen.onupgradeneeded = event => {
     }
     if (!db.objectStoreNames.contains('settingsOS')) {
         let settingsObjectStore = db.createObjectStore('settingsOS', { keyPath: 'name' })
+    }
+    if (!db.objectStoreNames.contains('themesOS')) {
+        let settingsObjectStore = db.createObjectStore('themesOS', { keyPath: 'name' })
     }
 }
 

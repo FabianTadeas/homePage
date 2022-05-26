@@ -35,9 +35,11 @@ for (let i = 0; i < mainLinks.length; i++) {
     let linkUrl = mainLinks[i].firstElementChild.dataset.url;
     let anchorID = linkUrl.substring(1);
     let anchor = document.getElementById(anchorID);
+    let start;
+    if (anchor.offsetTop - 100 > 0) {start = anchor.offsetTop - 100} else {start = 1}
 
     anchors[i] = {url: linkUrl,
-                  start: anchor.offsetTop - 100
+                  start: start
     }
 }
 for (let i = 0; i < anchors.length; i++) {
