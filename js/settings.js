@@ -2,6 +2,7 @@ import { buildNavBar, download } from "./homePage.js";
 import { addToDatabase, editDatabase, purgeObjectStore, readAllFromDatabaseByIndex, readFromDatabase } from "./dataBase.js";
 
 export let editMode = false;
+let root = document.querySelector(':root');
 
 console.log('settings imported');
 
@@ -19,7 +20,7 @@ export async function loadTheme() {
     const themeReadOut = document.getElementById('themeState');
     themeReadOut.innerHTML = theme.themeList[theme.activeTheme];
     
-    let root = document.querySelector(':root');
+    
     let rootInEditmode = document.querySelector('body.editMode :root');
     let themeColors = await readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
 
@@ -117,6 +118,21 @@ export function settingsOpen() {
         })
         location.reload(); 
     })
+
+
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeReadOut = document.getElementById('fontSizeValue');
+    fontSizeSlider.addEventListener('input', () => {
+        fontSizeReadOut.innerHTML = fontSizeSlider.value;
+        root.style.setProperty('--fontSize', `${fontSizeSlider.value}px`);
+    })
+    fontSizeSlider.addEventListener('mouseup', async () => {
+        let fontObj = await readFromDatabase('fontSize', 'settingsOS'); 
+        
+        fontObj.value = fontSizeSlider.value;
+        
+        editDatabase(fontObj, 'settingsOS');
+    })
 }
 
 
@@ -128,5 +144,20 @@ export async function loadUkr() {
 
     if (ukraineObj.active) document.getElementById('ukraine').classList.remove('hidden')
     if (!ukraineObj.active) document.getElementById('ukraine').classList.add('hidden')
+}
+
+
+export async function loadFontSize() {
+    let fontObj = await readFromDatabase('fontSize', 'settingsOS');
+
+    root.style.setProperty('--fontSize', `${fontObj.value}px`);
+
+
+
+    const fontSizeReadOut = document.getElementById('fontSizeValue');
+    fontSizeReadOut.innerHTML = fontObj.value;
+
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    fontSizeSlider.value = fontObj.value;
 }
 

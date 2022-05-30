@@ -3,7 +3,7 @@ import { settingsOpen, editMode } from "./settings.js";
 
 let DBInitCalls = {
     './homePage.js': ['buildNavBar'],
-    './settings.js': ['loadTheme', 'loadUkr']
+    './settings.js': ['loadTheme', 'loadUkr', 'loadFontSize']
 }
 
 onDatabaseInitCall(DBInitCalls);
