@@ -13,7 +13,7 @@ let contentBox = document.getElementById('contentBox'),
 root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
 
 export async function loadTheme() {
-    let theme = await readFromDatabase('theme', 'settingsOS');
+    let theme = await indexedDB.readFromDatabase('theme', 'settingsOS');
  
     let themeColors = await readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
 
@@ -30,7 +30,7 @@ export async function loadUkr() {
 }
 
 export async function loadFontSize() {
-    let fontObj = await readFromDatabase('fontSize', 'settingsOS');
+    let fontObj = await indexedDB.readFromDatabase('fontSize', 'settingsOS');
     root.style.setProperty('--fontSize', `${fontObj.value}px`);
 }
 
