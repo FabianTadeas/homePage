@@ -15,7 +15,7 @@ root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
 export async function loadTheme() {
     let theme = await indexedDB.readFromDatabase('theme', 'settingsOS');
  
-    let themeColors = await readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
+    let themeColors = await indexedDB.readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
 
     
 
