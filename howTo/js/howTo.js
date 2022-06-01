@@ -1,7 +1,7 @@
 import * as indexedDB from '../../js/dataBase.js';
 
 let DBInitCalls = {
-    '../howTo/js/howTo.js': ['loadTheme', 'loadUkr']
+    '../howTo/js/howTo.js': ['loadTheme', 'loadUkr', 'loadFontSize']
 }
 indexedDB.onDatabaseInitCall(DBInitCalls);
 
@@ -13,13 +13,25 @@ let contentBox = document.getElementById('contentBox'),
 root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
 
 export async function loadTheme() {
-    let theme = await indexedDB.readFromDatabase('theme', 'settingsOS');
-    document.body.classList.add(theme.themeList[theme.activeTheme]);
+    let theme = await readFromDatabase('theme', 'settingsOS');
+ 
+    let themeColors = await readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
+
+    
+
+    for (const color in themeColors.colors) {
+        root.style.setProperty(`--${color}`, themeColors.colors[color]);
+    }
 }
 
 export async function loadUkr() {
     let ukraineObj = await indexedDB.readFromDatabase('ukraine', 'settingsOS');
     if (ukraineObj.active) document.getElementById('ukraine').classList.remove('hidden')
+}
+
+export async function loadFontSize() {
+    let fontObj = await readFromDatabase('fontSize', 'settingsOS');
+    root.style.setProperty('--fontSize', `${fontObj.value}px`);
 }
 
 let navBarLinksList = document.querySelectorAll('.link')
