@@ -167,6 +167,8 @@ body.editMode table.title {
 #leftContainer table.link {
     color: var(--textColor);
     cursor: pointer;
+    table-layout: fixed;
+    overflow: hidden;
 }
 #leftContainer table:not(.title):hover {
     background-color: var(--accentColorHover);
