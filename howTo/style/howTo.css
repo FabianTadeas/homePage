@@ -20,3 +20,7 @@ p {
 footer {
     height: 5rem;
 }
+
+img {
+    width: 60%;
+}
