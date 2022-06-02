@@ -134,6 +134,7 @@ a:hover {
 }
 #leftContainer table {
     transition: var(--transitionSpeed);
+    transition-property: background-color;
     height: 100%;
     width: 100%;
     border-collapse: collapse;
