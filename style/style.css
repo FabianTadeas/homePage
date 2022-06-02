@@ -93,10 +93,10 @@ a:hover {
     flex-shrink: 0;
     overflow-y: auto;
     padding: 0 0.4rem 0 0.4rem;
+    transition-property: width;
 }
 
 #leftContainer ul {
-    transition: var(--transitionSpeed);
     padding: 0;
     list-style-type: none;
     overflow-x: hidden;
@@ -183,6 +183,7 @@ body.editMode table.title {
 }
 #leftContainer li.isBeingDraggedOver {
     transition: var(--transitionSpeed);
+    transition-property: border-top;
     border-top: 1px solid var(--accentColorSelected);
 }
 
@@ -207,6 +208,7 @@ body.editMode table.title {
 
 #contentBox {
     transition: var(--transitionSpeed);
+    transition-property: border-color;
     box-sizing: border-box;
     background-color: var(--divBgcolor);
     border: 1px solid var(--borderColor);
@@ -244,4 +246,3 @@ body.editMode table.title {
         opacity: 1;
     }
 }
-
