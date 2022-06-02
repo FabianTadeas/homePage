@@ -147,6 +147,8 @@ a:hover {
     padding: 0;
     vertical-align: center;
     text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 #leftContainer table.editButton td, #editModeToggleB td {
     text-align: center;
@@ -169,7 +171,6 @@ body.editMode table.title {
     color: var(--textColor);
     cursor: pointer;
     table-layout: fixed;
-    overflow: hidden;
 }
 #leftContainer table:not(.title):hover {
     background-color: var(--accentColorHover);
