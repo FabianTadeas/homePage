@@ -11,8 +11,7 @@
             "icon": "star",
             "type": "link",
             "ID": "example1",
-            "order": 1,
-            "activeByDefault": "yes"
+            "order": 1
         },
         {
             "name": "example Link2",
@@ -95,7 +94,7 @@
     "defaultUserSettings": [
         {
             "name": "theme",
-            "themeList": ["darkTheme", "lightTheme", "redTheme"],
+            "themeList": ["darkTheme", "lightTheme", "redTheme", "catppuccin mocha"],
             "activeTheme": 0
         },
         {
@@ -145,19 +144,36 @@
         {
             "name": "redTheme",
             "colors": {
-                "mainBgColor":        "#420b0d",
-                "accentColorHover":   "#240809",
-                "accentColorSelected":"#f7111a",
-                "borderColor":        "#ffffff",
-                "divBgcolor":         "#000000",
-                "textColor":          "#ffffff",
-                "textColorFaded":     "#878787",
+                "mainBgColor":        "#2A262B",
+                "accentColorHover":   "#204646",
+                "accentColorSelected":"#3E8989",
+                "borderColor":        "#897D8C",
+                "divBgcolor":         "#1A181B",
+                "textColor":          "#F1E9DA",
+                "textColorFaded":     "#E3D3B5",
                 "headerBgColor":      "#FCFCFC",
                 "listEven":           "#F7F7F7",
                 "listOdd":            "#FFFFFF",
                 "transitionSpeed":    "2s",
                 "editMode-accentColorHover":   "#361dc4",
                 "editMode-accentColorSelected":"#2803ff"
+            }
+        },
+        {
+            "name": "catppuccin mocha",
+            "colors": {
+                "mainBgColor":        "#313244",
+                "accentColorHover":   "#b4befe",
+                "accentColorSelected":"#89b4fa",
+                "borderColor":        "#585b70",
+                "divBgcolor":         "#1e1e2e",
+                "textColor":          "#cdd6f4",
+                "textColorFaded":     "#a6adc8",
+                "headerBgColor":      "#FCFCFC",
+                "listEven":           "#45475a",
+                "listOdd":            "#1e1e2e",
+                "editMode-accentColorHover":   "#eba0ac",
+                "editMode-accentColorSelected":"#f38ba8"
             }
         }
     ]

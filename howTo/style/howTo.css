@@ -13,7 +13,7 @@ h1 {
     color: var(--textColorFaded);
 }
 
-p {
+main>p {
     margin-left: 5%;
 }
 
@@ -21,6 +21,64 @@ footer {
     height: 5rem;
 }
 
-img {
+header {
+    padding-top: 5rem;
+}
+
+img, .codeBox, #contentBox table {
+    transition: var(--transitionSpeed);
+    transition-property: border-color, transform;
     width: 60%;
+    border: 1px solid var(--borderColor);
+    border-radius: 4px;
+}
+
+img:hover, .codeBox:hover, #contentBox table:hover{
+    border-color: var(--accentColorSelected);
+    transform: scale(1.1);
+}
+
+.codeBox {
+    padding-inline: 5%;
+}
+
+footer a, header a {
+    margin-inline: 2%;
+}
+
+#contentBox table {
+    border-spacing:0;
+}
+
+#contentBox td {
+    transition: var(--transitionSpeed);
+    transition-property: background-color;
+    text-align: center;
+}
+
+#contentBox tr:first-child {
+    background-color: var(--headerBgColor);
+}
+
+#contentBox td:not(:last-child) {
+    border-right: 1px solid var(--borderColor);
+}
+
+#contentBox tr:not(:last-child) td {
+    border-bottom: 1px solid var(--borderColor);
+}
+
+#contentBox td:hover {
+    background-color: var(--accentColorHover);
+}
+
+@media screen and (max-width: 1000px) {
+    .center {
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+    }
+    header {
+        padding-top: 1rem;
+    }
 }

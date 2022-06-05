@@ -52,7 +52,13 @@ body {
 
 .center {
     width: 100%;
-    text-align: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+.center>* {
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 a {
