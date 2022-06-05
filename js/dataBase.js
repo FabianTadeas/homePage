@@ -58,6 +58,7 @@ requestIDBOpen.onupgradeneeded = event => {
     if (!db.objectStoreNames.contains('linksOS')) {
         let linksObjectStore = db.createObjectStore('linksOS', { keyPath: 'ID' })
         linksObjectStore.createIndex('orderIndex', 'order', { unique: false });
+        linksObjectStore.createIndex('activeByDefaultIndex', 'activeByDefault', { unique: false });
     }
     if (!db.objectStoreNames.contains('bookmarksOS')) {
         let bookmarksObjectStore = db.createObjectStore('bookmarksOS', { keyPath: 'ID', autoIncrement: 'true' })

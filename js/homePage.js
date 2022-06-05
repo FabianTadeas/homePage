@@ -35,7 +35,7 @@ const onExtLinkClick =(event) => {
 function NBupdate() {
     console.log('updating nb listeners')
     navBarIntLinksList = document.querySelectorAll('table.link:not(#addLink, .extLink)');
-    let navbarLinksList = document.querySelectorAll('#mainNavbar>li>table:not(#addLink)');
+    /* let navbarLinksList = document.querySelectorAll('#mainNavbar>li>table:not(#addLink)'); */
     let externalLinks = document.querySelectorAll('table.extLink');
 
     let activeLink;
@@ -127,6 +127,10 @@ export async function buildNavBar(data) {
         }
         if (editMode) {
             li.draggable = true
+        }
+
+        if (object.activeByDefault == 'yes') {
+            activeLinkId = object.ID;
         }
 
         mainNavbar.appendChild(li);

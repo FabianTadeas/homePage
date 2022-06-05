@@ -11,7 +11,8 @@
             "icon": "star",
             "type": "link",
             "ID": "example1",
-            "order": 1
+            "order": 1,
+            "activeByDefault": "yes"
         },
         {
             "name": "example Link2",
@@ -154,6 +155,7 @@
                 "headerBgColor":      "#FCFCFC",
                 "listEven":           "#F7F7F7",
                 "listOdd":            "#FFFFFF",
+                "transitionSpeed":    "2s",
                 "editMode-accentColorHover":   "#361dc4",
                 "editMode-accentColorSelected":"#2803ff"
             }

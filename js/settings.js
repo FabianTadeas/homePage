@@ -133,6 +133,39 @@ export function settingsOpen() {
         
         editDatabase(fontObj, 'settingsOS');
     })
+
+
+    const defaultLinkSelector = document.getElementById('defaultLinkSelector');
+    const linkList = document.querySelectorAll('table.link:not(#addLink, .extLink, .predefinedLink)');
+    linkList.forEach(link => {
+        let name = link.children[0].children[0].children[1].innerHTML;
+        let option = document.createElement('option');
+    
+        option.innerHTML = name;
+        option.value = link.id;
+
+        defaultLinkSelector.appendChild(option);
+    })
+
+    defaultLinkSelector.addEventListener('input', async (event) => {
+        console.warn(defaultLinkSelector.value);
+
+
+        let oldLink = await readAllFromDatabaseByIndex('activeByDefaultIndex', 'yes', 'linksOS');
+        oldLink = oldLink[0];
+        console.log(oldLink)
+
+        if (oldLink) {
+            oldLink.activeByDefault = 'no';
+            editDatabase(oldLink, 'linksOS');
+        }
+        
+        if (defaultLinkSelector.value == 'undefined') return
+
+        let newLink = await readFromDatabase(defaultLinkSelector.value, 'linksOS');
+        newLink.activeByDefault = 'yes';
+        editDatabase(newLink, 'linksOS');
+    })
 }
 
 
