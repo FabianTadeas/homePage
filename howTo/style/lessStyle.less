@@ -27,15 +27,16 @@ header {
     padding-bottom: 1rem;
 }
 
-img, .codeBox, #contentBox table, .bootstrap {
+.center>img, .center>.codeBox, .center>table, .center>.bootstrap {
     transition: var(--transitionSpeed);
     transition-property: border-color, transform;
     width: 60%;
     border: 1px solid var(--borderColor);
     border-radius: 4px;
+    background-color: var(--divBgcolor);
 }
 
-img:hover, .codeBox:hover, #contentBox table:hover, .bootstrap:hover {
+.center>img:hover, .center>.codeBox:hover, .center>table:hover, .center>.bootstrap:hover {
     border-color: var(--accentColorSelected);
     transform: scale(1.05);
 }
