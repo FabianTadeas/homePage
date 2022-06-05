@@ -27,7 +27,7 @@
     /* border: 1px solid red; */
 }
 body {
-    background-color: var(--mainBgColor);
+    background-color: var(--mainBgColor) !important;
     margin: 0;
     padding: 0;
     height: 100vh;
