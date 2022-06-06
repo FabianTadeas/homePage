@@ -43,6 +43,7 @@ navBarLinksList.forEach(link => {
 })
 
 let anchors = []
+document.addEventListener('DOMContentLoaded', function() {
 for (let i = 0; i < mainLinks.length; i++) {
     let linkUrl = mainLinks[i].firstElementChild.dataset.url;
     let anchorID = linkUrl.substring(1);
@@ -63,7 +64,7 @@ for (let i = 0; i < anchors.length; i++) {
     }
 }
 console.table(anchors);
-
+}, false);
 
 contentBox.onscroll = () => {
     let currentDepth = contentBox.scrollTop;
