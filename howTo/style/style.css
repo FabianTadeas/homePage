@@ -75,28 +75,7 @@ header a {
     padding-top: 1rem;
   }
 }
-.bootstrap {
-  /* rtl:raw:
-  [type="tel"],
-  [type="url"],
-  [type="email"],
-  [type="number"] {
-    direction: ltr;
-  }
-  */
-  /* rtl:begin:ignore */
-  /* rtl:end:ignore */
-  /* rtl:options: {
-    "autoRename": true,
-    "stringMap":[ {
-      "name"    : "prev-next",
-      "search"  : "prev",
-      "replace" : "next"
-    } ]
-  } */
-  /* rtl:begin:remove */
-  /* rtl:end:remove */
-}
+
 .bootstrap :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -620,7 +599,7 @@ header a {
   color: #6c757d;
 }
 .bootstrap .blockquote-footer::before {
-  content: "— ";
+  content: "— ";
 }
 .bootstrap .img-fluid {
   max-width: 100%;
