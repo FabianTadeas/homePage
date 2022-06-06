@@ -14,10 +14,10 @@ root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
 
 export async function loadTheme() {
     let theme = await indexedDB.readFromDatabase('theme', 'settingsOS');
- 
+
     let themeColors = await indexedDB.readFromDatabase(theme.themeList[theme.activeTheme], 'themesOS');
 
-    
+
 
     for (const color in themeColors.colors) {
         root.style.setProperty(`--${color}`, themeColors.colors[color]);
@@ -32,6 +32,8 @@ export async function loadUkr() {
 export async function loadFontSize() {
     let fontObj = await indexedDB.readFromDatabase('fontSize', 'settingsOS');
     root.style.setProperty('--fontSize', `${fontObj.value}px`);
+
+    updateAnchors()
 }
 
 let navBarLinksList = document.querySelectorAll('.link')
@@ -43,28 +45,30 @@ navBarLinksList.forEach(link => {
 })
 
 let anchors = []
-document.addEventListener('DOMContentLoaded', function() {
-for (let i = 0; i < mainLinks.length; i++) {
-    let linkUrl = mainLinks[i].firstElementChild.dataset.url;
-    let anchorID = linkUrl.substring(1);
-    let anchor = document.getElementById(anchorID);
-    let start;
-    if (anchor.offsetTop - 100 > 0) {start = anchor.offsetTop - 100} else {start = 1}
+const updateAnchors = () => {
+    for (let i = 0; i < mainLinks.length; i++) {
+        let linkUrl = mainLinks[i].firstElementChild.dataset.url;
+        let anchorID = linkUrl.substring(1);
+        let anchor = document.getElementById(anchorID);
+        let start;
+        if (anchor.offsetTop > 300) { start = anchor.offsetTop - 300 } else { start = 1 }
 
-    anchors[i] = {url: linkUrl,
-                  start: start
+        anchors[i] = {
+            url: linkUrl,
+            start: start
+        }
     }
+    for (let i = 0; i < anchors.length; i++) {
+        if (anchors[i + 1]) {
+            anchors[i].end = anchors[i + 1].start;
+        }
+        if (!anchors[i + 1]) {
+            anchors[i].end = contentBox.scrollHeight;
+        }
+    }
+    console.table(anchors);
 }
-for (let i = 0; i < anchors.length; i++) {
-    if (anchors[i+1]) {
-        anchors[i].end = anchors[i+1].start;
-    }
-    if (!anchors[i+1]) {
-        anchors[i].end = contentBox.scrollHeight;
-    }
-}
-console.table(anchors);
-}, false);
+window.addEventListener('resize', updateAnchors);
 
 contentBox.onscroll = () => {
     let currentDepth = contentBox.scrollTop;
