@@ -8,7 +8,17 @@ indexedDB.onDatabaseInitCall(DBInitCalls);
 let contentBox = document.getElementById('contentBox'),
     mainLinks = document.querySelectorAll('#mainNavbar>li'),
     footerLinks = document.querySelectorAll('#footerNavbar>li'),
-    root = document.querySelector(':root');
+    root = document.querySelector(':root'),
+    progressBar = document.getElementById('progressBar'),
+    contentBoxHeight,
+    maxScroll,
+    maxDepth;
+
+
+
+
+
+
 
 root.style.setProperty('--numberOfFooterLinks', footerLinks.length);
 
@@ -67,6 +77,10 @@ const updateAnchors = () => {
         }
     }
     console.table(anchors);
+
+    contentBoxHeight = contentBox.clientHeight;
+    maxScroll = contentBox.scrollHeight;
+    maxDepth = maxScroll - contentBoxHeight;
 }
 window.addEventListener('resize', updateAnchors);
 
@@ -78,5 +92,8 @@ contentBox.onscroll = () => {
         if (currentDepth > anchor.start && currentDepth < anchor.end) {
             link.classList.add('selected');
         }
-    })
+    }) 
+
+    let perc = Math.round((100 * currentDepth) / maxDepth);
+    progressBar.style.width = `${perc}%`
 }

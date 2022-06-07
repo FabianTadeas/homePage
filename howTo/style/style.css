@@ -65,6 +65,16 @@ header a {
 #contentBox td:hover {
   background-color: var(--accentColorHover);
 }
+#progressBarWrapper {
+  width: 100%;
+  height: 2px;
+  background-color: var(--borderColor);
+}
+#progressBar {
+  background-color: var(--accentColorSelected);
+  height: 100%;
+  width: 0;
+}
 @media screen and (max-width: 1000px) {
   .center {
     flex-wrap: wrap;
@@ -74,8 +84,15 @@ header a {
   header {
     padding-top: 1rem;
   }
+  #contentBox {
+    padding-inline: 10%;
+  }
 }
-
+@media screen and (max-width: 500px) {
+  #contentBox {
+    padding-inline: 5%;
+  }
+}
 .bootstrap :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
