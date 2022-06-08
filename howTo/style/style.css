@@ -67,7 +67,7 @@ header a {
 }
 #progressBarWrapper {
   width: 100%;
-  height: 2px;
+  height: 0.1rem;
   background-color: var(--borderColor);
 }
 #progressBar {
