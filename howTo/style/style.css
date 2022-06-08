@@ -47,6 +47,7 @@ header a {
 }
 #contentBox table {
   border-spacing: 0;
+  table-layout: fixed;
 }
 #contentBox td {
   transition: var(--transitionSpeed);
@@ -74,6 +75,10 @@ header a {
   background-color: var(--accentColorSelected);
   height: 100%;
   width: 0;
+}
+::selection {
+  color: var(--textColor);
+  background: var(--accentColorSelected);
 }
 @media screen and (max-width: 1000px) {
   .center {
