@@ -1,0 +1,100 @@
+#contentBox {
+  scroll-behavior: smooth;
+  padding-inline: 20%;
+}
+hr {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--borderColor);
+}
+h1 {
+  color: var(--textColorFaded);
+}
+main > p {
+  margin-left: 5%;
+}
+footer {
+  height: 5rem;
+}
+header {
+  padding-top: 3rem;
+  padding-bottom: 1rem;
+}
+.center > img,
+.center > .codeBox,
+.center > table,
+.center > .bootstrap {
+  transition: var(--transitionSpeed);
+  transition-property: border-color, transform;
+  width: 60%;
+  border: 1px solid var(--borderColor);
+  border-radius: 4px;
+  background-color: var(--divBgcolor);
+}
+.center > img:hover,
+.center > .codeBox:hover,
+.center > table:hover,
+.center > .bootstrap:hover {
+  border-color: var(--accentColorSelected);
+  transform: scale(1.05);
+}
+.codeBox {
+  padding-inline: 5%;
+}
+footer a,
+header a {
+  margin-inline: 2%;
+}
+#contentBox table {
+  border-spacing: 0;
+  table-layout: fixed;
+}
+#contentBox td {
+  transition: var(--transitionSpeed);
+  transition-property: background-color;
+  text-align: center;
+}
+#contentBox tr:first-child {
+  background-color: var(--headerBgColor);
+}
+#contentBox td:not(:last-child) {
+  border-right: 1px solid var(--borderColor);
+}
+#contentBox tr:not(:last-child) td {
+  border-bottom: 1px solid var(--borderColor);
+}
+#contentBox td:hover {
+  background-color: var(--accentColorHover);
+}
+#progressBarWrapper {
+  width: 100%;
+  height: 0.1rem;
+  background-color: var(--borderColor);
+}
+#progressBar {
+  background-color: var(--accentColorSelected);
+  height: 100%;
+  width: 0;
+}
+::selection {
+  color: var(--textColor);
+  background: var(--accentColorSelected);
+}
+@media screen and (max-width: 1000px) {
+  .center {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    padding-top: 1rem;
+  }
+  #contentBox {
+    padding-inline: 10%;
+  }
+}
+@media screen and (max-width: 500px) {
+  #contentBox {
+    padding-inline: 5%;
+  }
+}

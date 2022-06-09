@@ -1,7 +1,7 @@
-import * as indexedDB from '../../js/dataBase.js';
+import * as indexedDB from './dataBase.js';
 
 let DBInitCalls = {
-    '../howTo/js/howTo.js': ['loadTheme', 'loadUkr', 'loadFontSize']
+    './about.js': ['loadTheme', 'loadUkr', 'loadFontSize']
 }
 indexedDB.onDatabaseInitCall(DBInitCalls);
 
